@@ -52,9 +52,18 @@
                             @endif
                         </td>
                         <td class="py-4 px-6 text-right">
-                            <button @click="activeService = @js($svc); openEditModal = true" class="p-1.5 text-amber-500 hover:text-amber-700 rounded-lg hover:bg-amber-50 transition-all">
-                                <i class="fa fa-edit"></i> Edit
-                            </button>
+                            <div class="inline-flex items-center gap-2 justify-end">
+                                <button @click="activeService = @js($svc); openEditModal = true" class="px-2.5 py-1.5 text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all text-xs font-bold flex items-center gap-1" title="Edit Service">
+                                    <i class="fa fa-edit"></i> Edit
+                                </button>
+                                <form action="{{ route('services.destroy', $svc->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this service?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all" title="Delete Service">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -67,6 +76,11 @@
                 </tbody>
             </table>
         </div>
+        @if($services->hasPages())
+        <div class="px-6 py-4 border-t border-slate-100">
+            {{ $services->links() }}
+        </div>
+        @endif
     </div>
 
     <!-- Add Service Modal -->
@@ -108,6 +122,59 @@
                 <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
                     <button type="button" @click="openAddModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
                     <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md">Add Service</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Service Modal -->
+    <div x-show="openEditModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4" @click.outside="openEditModal = false">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Edit Agency Service</h3>
+                <button @click="openEditModal = false" class="text-slate-400 hover:text-slate-700"><i class="fa fa-times"></i></button>
+            </div>
+
+            <form :action="`{{ url('/services') }}/${activeService.id}`" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Service Name *</label>
+                    <input type="text" name="name" x-model="activeService.name" required
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Base Price (৳) *</label>
+                        <input type="number" step="0.01" name="base_price" x-model="activeService.base_price" required
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-amber-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Unit Type *</label>
+                        <select name="unit" x-model="activeService.unit" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-amber-500">
+                            <option value="month">month</option>
+                            <option value="post">post</option>
+                            <option value="video">video</option>
+                            <option value="project">project</option>
+                            <option value="article">article</option>
+                            <option value="session">session</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Service Status *</label>
+                    <select name="active" x-model="activeService.active" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-amber-500">
+                        <option :value="1">Active</option>
+                        <option :value="0">Disabled</option>
+                    </select>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
+                    <button type="button" @click="openEditModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md">Update Service</button>
                 </div>
             </form>
         </div>

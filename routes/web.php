@@ -54,5 +54,5 @@ Route::middleware(['auth'])->group(function () {
 
     // Financial Oversight (Invoices & Expenses)
     Route::resource('invoices', InvoiceController::class)->only(['index', 'create', 'store', 'show']);
-    Route::resource('expenses', ExpenseController::class)->only(['index', 'store']);
+    Route::resource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy']);
 });

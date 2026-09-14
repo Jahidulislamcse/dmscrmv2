@@ -28,6 +28,7 @@
                         <th class="py-3.5 px-6">Payment Method</th>
                         <th class="py-3.5 px-6">Date</th>
                         <th class="py-3.5 px-6">Logged By</th>
+                        <th class="py-3.5 px-6 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-xs">
@@ -53,10 +54,19 @@
                         <td class="py-4 px-6 text-slate-500 font-medium">
                             {{ $exp->createdBy->name ?? 'Admin' }}
                         </td>
+                        <td class="py-4 px-6 text-right">
+                            <form action="{{ route('expenses.destroy', $exp) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this expense log?');" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-1.5 text-slate-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50" title="Delete Expense">
+                                    <i class="fa fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-12 text-center text-slate-400">
+                        <td colspan="7" class="py-12 text-center text-slate-400">
                             <i class="fa fa-receipt text-4xl mb-3 text-slate-300 block"></i>
                             <p class="text-sm font-semibold">No agency expenses logged yet.</p>
                         </td>
@@ -65,6 +75,11 @@
                 </tbody>
             </table>
         </div>
+        @if($expenses->hasPages())
+        <div class="px-6 py-4 border-t border-slate-100">
+            {{ $expenses->links() }}
+        </div>
+        @endif
     </div>
 
     <!-- Modal to Log Expense -->

@@ -150,6 +150,20 @@
                     </a>
                     @endif
 
+                    <!-- WORK & DELIVERABLES -->
+                    <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
+
+                    <a href="{{ route('tasks.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('tasks.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-list-check w-4 text-center"></i>
+                        <span>Task Board</span>
+                        @php $openTaskCount = \App\Models\Task::where('status', '!=', 'done')->whereNull('parent_task_id')->count(); @endphp
+                        @if($openTaskCount > 0)
+                        <span class="ml-auto bg-amber-500/20 text-brand-500 text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-500/30">
+                            {{ $openTaskCount }}
+                        </span>
+                        @endif
+                    </a>
+
                     <!-- AGENCY MANAGEMENT -->
                     @if(auth()->user()->canAccess('team') || auth()->user()->canAccess('services'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Agency Management</div>

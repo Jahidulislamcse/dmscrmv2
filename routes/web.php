@@ -12,7 +12,8 @@ use App\Http\Controllers\{
     ExpenseController,
     LeadController,
     MeetingController,
-    SettingsController
+    SettingsController,
+    TaskController
 };
 
 // ── Guest / Auth Routes ──
@@ -46,6 +47,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Agency Master Services Catalog
     Route::resource('services', ServiceController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Task Board & Deliverables Operations
+    Route::resource('tasks', TaskController::class);
+    Route::post('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
+    Route::post('/tasks/{task}/progress', [TaskController::class, 'addProgress'])->name('tasks.add-progress');
 
     // Requisition Approval Hub
     Route::get('/requisitions', [RequisitionController::class, 'index'])->name('requisitions.index');

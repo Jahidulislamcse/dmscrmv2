@@ -49,13 +49,20 @@
                :class="sidebarOpen ? 'block' : 'hidden md:flex'">
             <div>
                 <!-- Brand Header -->
+                @php $agencySettings = \App\Http\Controllers\SettingsController::getAgencySettings(); @endphp
                 <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                        @if(!empty($agencySettings['agency_logo']))
+                        <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-1 overflow-hidden shadow-md">
+                            <img src="{{ asset($agencySettings['agency_logo']) }}" alt="Logo" class="max-h-full max-w-full object-contain">
+                        </div>
+                        @else
                         <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center font-extrabold text-white text-lg shadow-md shadow-amber-500/20">
                             D
                         </div>
+                        @endif
                         <div>
-                            <span class="font-extrabold text-white text-lg tracking-tight">DMS <span class="text-brand-500">CRM</span></span>
+                            <span class="font-extrabold text-white text-lg tracking-tight truncate max-w-[130px] block">{{ $agencySettings['agency_name'] ?? 'DMS CRM' }}</span>
                             <span class="block text-[10px] text-slate-400 font-semibold tracking-wider uppercase">v2.0 MVC Pro</span>
                         </div>
                     </a>

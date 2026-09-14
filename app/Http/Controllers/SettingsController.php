@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Hash, File};
-use App\Models\{User, LeadStage, Client, Lead, Service, Invoice, Expense};
+use App\Models\{User, LeadStage};
 
 class SettingsController extends Controller
 {
@@ -13,9 +13,9 @@ class SettingsController extends Controller
         return storage_path('app/settings.json');
     }
 
-    private function getAgencySettings(): array
+    public static function getAgencySettings(): array
     {
-        $path = $this->getSettingsPath();
+        $path = storage_path('app/settings.json');
         $defaults = [
             'agency_name' => config('app.name', 'DMS Creative Agency'),
             'agency_email' => env('COMPANY_EMAIL', 'info@dmssoftware.agency'),
@@ -23,6 +23,7 @@ class SettingsController extends Controller
             'agency_address' => env('COMPANY_ADDRESS', 'Dhaka, Bangladesh'),
             'agency_currency' => '৳',
             'tax_id' => 'BIN-992019481',
+            'agency_logo' => null,
         ];
 
         if (File::exists($path)) {
@@ -37,21 +38,11 @@ class SettingsController extends Controller
 
     public function index()
     {
-        $settings = $this->getAgencySettings();
+        $settings = self::getAgencySettings();
         $user = Auth::user();
-        
-        // System Info
-        $systemInfo = [
-            'php_version' => PHP_VERSION,
-            'laravel_version' => app()->version(),
-            'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'PHP CLI / XAMPP / cPanel',
-            'memory_limit' => ini_get('memory_limit'),
-            'timezone' => config('app.timezone'),
-        ];
-
         $leadStages = LeadStage::orderBy('order', 'asc')->get();
 
-        return view('settings.index', compact('settings', 'user', 'systemInfo', 'leadStages'));
+        return view('settings.index', compact('settings', 'user', 'leadStages'));
     }
 
     public function updateAgency(Request $request)
@@ -63,7 +54,31 @@ class SettingsController extends Controller
             'agency_address' => 'required|string|max:500',
             'agency_currency' => 'required|string|max:10',
             'tax_id' => 'nullable|string|max:100',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
         ]);
+
+        $currentSettings = self::getAgencySettings();
+        $data = [
+            'agency_name' => $validated['agency_name'],
+            'agency_email' => $validated['agency_email'],
+            'agency_phone' => $validated['agency_phone'],
+            'agency_address' => $validated['agency_address'],
+            'agency_currency' => $validated['agency_currency'],
+            'tax_id' => $validated['tax_id'] ?? null,
+            'agency_logo' => $currentSettings['agency_logo'] ?? null,
+        ];
+
+        if ($request->hasFile('logo')) {
+            $uploadDir = public_path('uploads');
+            if (!File::exists($uploadDir)) {
+                File::makeDirectory($uploadDir, 0755, true);
+            }
+
+            $file = $request->file('logo');
+            $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $data['agency_logo'] = '/uploads/' . $filename;
+        }
 
         $path = $this->getSettingsPath();
         $directory = dirname($path);
@@ -72,9 +87,9 @@ class SettingsController extends Controller
             File::makeDirectory($directory, 0755, true);
         }
 
-        File::put($path, json_encode($validated, JSON_PRETTY_PRINT));
+        File::put($path, json_encode($data, JSON_PRETTY_PRINT));
 
-        return redirect()->route('settings.index')->with('success', 'Agency settings updated successfully!');
+        return redirect()->route('settings.index')->with('success', 'Agency settings & site logo updated successfully!');
     }
 
     public function updateProfile(Request $request)
@@ -113,28 +128,5 @@ class SettingsController extends Controller
         ]);
 
         return redirect()->route('settings.index')->with('success', 'Password changed successfully!');
-    }
-
-    public function exportBackup()
-    {
-        $data = [
-            'exported_at' => now()->toDateTimeString(),
-            'exported_by' => Auth::user()->name ?? 'Admin',
-            'agency_settings' => $this->getAgencySettings(),
-            'users' => User::all(['id', 'name', 'username', 'email', 'role', 'active']),
-            'clients' => Client::all(),
-            'services' => Service::all(),
-            'leads' => Lead::with(['requirements', 'timelines'])->get(),
-            'invoices' => Invoice::with(['items'])->get(),
-            'expenses' => Expense::all(),
-        ];
-
-        $filename = 'dmscrm_backup_' . date('Y-m-d_H-i-s') . '.json';
-
-        return response()->streamDownload(function () use ($data) {
-            echo json_encode($data, JSON_PRETTY_PRINT);
-        }, $filename, [
-            'Content-Type' => 'application/json',
-        ]);
     }
 }

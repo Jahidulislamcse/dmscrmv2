@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'System & Agency Settings')
+@section('title', 'Agency & Account Settings')
 @section('header_title', 'Agency Configuration & Account Preferences')
 
 @section('content')
@@ -11,13 +11,13 @@
             <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                 <i class="fa fa-sliders text-brand-500"></i> Settings & Control Center
             </h2>
-            <p class="text-xs text-slate-500 mt-1">Manage agency branding, user account security, CRM pipeline stages, and system backups.</p>
+            <p class="text-xs text-slate-500 mt-1">Manage agency branding, site logo, account security, and CRM pipeline stages.</p>
         </div>
 
         <!-- Tab Navigation Buttons -->
         <div class="flex items-center gap-1.5 p-1 bg-slate-100/80 border border-slate-200 rounded-xl">
             <button @click="activeTab = 'agency'" :class="activeTab === 'agency' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900 font-semibold'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5">
-                <i class="fa fa-building text-brand-500"></i> Agency Profile
+                <i class="fa fa-building text-brand-500"></i> Agency Profile & Logo
             </button>
             <button @click="activeTab = 'account'" :class="activeTab === 'account' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900 font-semibold'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5">
                 <i class="fa fa-user-gear text-purple-500"></i> My Account
@@ -25,21 +25,42 @@
             <button @click="activeTab = 'pipeline'" :class="activeTab === 'pipeline' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900 font-semibold'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5">
                 <i class="fa fa-filter-circle-dollar text-emerald-500"></i> CRM Pipeline
             </button>
-            <button @click="activeTab = 'system'" :class="activeTab === 'system' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900 font-semibold'" class="px-3.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5">
-                <i class="fa fa-server text-blue-500"></i> System & Backup
-            </button>
         </div>
     </div>
 
-    <!-- TAB 1: AGENCY PROFILE -->
+    <!-- TAB 1: AGENCY PROFILE & LOGO -->
     <div x-show="activeTab === 'agency'" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">
         <div class="border-b border-slate-100 pb-4">
-            <h3 class="text-sm font-bold text-slate-900">Agency Organization Profile</h3>
-            <p class="text-xs text-slate-500">These details appear on generated invoices, client requisitions, and proposal documents.</p>
+            <h3 class="text-sm font-bold text-slate-900">Agency Branding & Logo Settings</h3>
+            <p class="text-xs text-slate-500">These branding details and logo appear across your CRM portal, invoices, and proposal documents.</p>
         </div>
 
-        <form action="{{ route('settings.update-agency') }}" method="POST" class="space-y-5 max-w-3xl">
+        <form action="{{ route('settings.update-agency') }}" method="POST" enctype="multipart/form-data" class="space-y-5 max-w-3xl">
             @csrf
+            
+            <!-- Site Logo Upload Section -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Site / Agency Logo</label>
+                <div class="flex flex-col sm:flex-row items-center gap-5">
+                    <div class="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center p-2 overflow-hidden flex-shrink-0 shadow-sm">
+                        @if(!empty($settings['agency_logo']))
+                            <img src="{{ asset($settings['agency_logo']) }}" alt="Agency Logo" class="max-h-full max-w-full object-contain">
+                        @else
+                            <div class="text-center text-slate-400">
+                                <i class="fa fa-image text-2xl block mb-1"></i>
+                                <span class="text-[10px] font-bold">No Logo</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="space-y-2 flex-1">
+                        <input type="file" name="logo" accept="image/*"
+                               class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer">
+                        <p class="text-[11px] text-slate-400">Recommended format: PNG, SVG, WEBP, or JPG. Max file size: 4MB.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Agency Name *</label>
@@ -82,7 +103,7 @@
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
                 <button type="submit" class="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
-                    <i class="fa fa-save"></i> Save Agency Profile
+                    <i class="fa fa-save"></i> Save Agency Profile & Logo
                 </button>
             </div>
         </form>
@@ -207,63 +228,6 @@
                 <p class="text-xs font-semibold">No lead stages configured.</p>
             </div>
             @endforelse
-        </div>
-    </div>
-
-    <!-- TAB 4: SYSTEM INFORMATION & BACKUP -->
-    <div x-show="activeTab === 'system'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- System Health & Environment -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">
-            <div class="border-b border-slate-100 pb-4">
-                <h3 class="text-sm font-bold text-slate-900">System Environment & Runtime</h3>
-                <p class="text-xs text-slate-500">Live operational environment diagnostic statistics.</p>
-            </div>
-
-            <div class="space-y-3 text-xs">
-                <div class="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span class="font-semibold text-slate-600">PHP Version</span>
-                    <span class="font-mono font-bold text-slate-900">{{ $systemInfo['php_version'] }}</span>
-                </div>
-                <div class="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span class="font-semibold text-slate-600">Laravel Framework</span>
-                    <span class="font-mono font-bold text-slate-900">v{{ $systemInfo['laravel_version'] }}</span>
-                </div>
-                <div class="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span class="font-semibold text-slate-600">Server Software</span>
-                    <span class="font-mono font-bold text-slate-900 truncate max-w-xs">{{ $systemInfo['server_software'] }}</span>
-                </div>
-                <div class="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span class="font-semibold text-slate-600">Memory Limit</span>
-                    <span class="font-mono font-bold text-slate-900">{{ $systemInfo['memory_limit'] }}</span>
-                </div>
-                <div class="flex items-center justify-between py-2">
-                    <span class="font-semibold text-slate-600">App Timezone</span>
-                    <span class="font-mono font-bold text-slate-900">{{ $systemInfo['timezone'] }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Export & Backup -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">
-            <div class="border-b border-slate-100 pb-4">
-                <h3 class="text-sm font-bold text-slate-900">Database Backup & Export</h3>
-                <p class="text-xs text-slate-500">Export complete CRM data records (Clients, Leads, Invoices, Expenses) as JSON.</p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
-                <div class="flex items-center gap-2 font-bold text-xs">
-                    <i class="fa fa-shield-halved text-amber-600"></i> JSON Backup Protection
-                </div>
-                <p class="text-[11px] text-amber-800">
-                    You can download a complete backup snapshot of your CRM database records for safe archiving or migration to live servers.
-                </p>
-            </div>
-
-            <div class="pt-2">
-                <a href="{{ route('settings.export-backup') }}" class="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
-                    <i class="fa fa-download"></i> Download Full CRM Backup (JSON)
-                </a>
-            </div>
         </div>
     </div>
 </div>

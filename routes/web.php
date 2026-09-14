@@ -62,5 +62,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings/agency', [SettingsController::class, 'updateAgency'])->name('settings.update-agency');
     Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.update-profile');
     Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.update-password');
-    Route::get('/settings/export', [SettingsController::class, 'exportBackup'])->name('settings.export-backup');
 });

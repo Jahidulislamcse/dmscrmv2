@@ -11,7 +11,8 @@ use App\Http\Controllers\{
     InvoiceController,
     ExpenseController,
     LeadController,
-    MeetingController
+    MeetingController,
+    SettingsController
 };
 
 // ── Guest / Auth Routes ──
@@ -55,4 +56,11 @@ Route::middleware(['auth'])->group(function () {
     // Financial Oversight (Invoices & Expenses)
     Route::resource('invoices', InvoiceController::class)->only(['index', 'create', 'store', 'show']);
     Route::resource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy']);
+
+    // System & Agency Settings
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/agency', [SettingsController::class, 'updateAgency'])->name('settings.update-agency');
+    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.update-profile');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.update-password');
+    Route::get('/settings/export', [SettingsController::class, 'exportBackup'])->name('settings.export-backup');
 });

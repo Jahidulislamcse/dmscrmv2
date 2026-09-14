@@ -59,7 +59,6 @@ class SettingsController extends Controller
                 'agency_address' => 'required|string|max:500',
                 'agency_currency' => 'required|string|max:10',
                 'tax_id' => 'nullable|string|max:100',
-                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
             ]);
 
             $currentSettings = self::getAgencySettings();
@@ -73,16 +72,26 @@ class SettingsController extends Controller
                 'agency_logo' => $currentSettings['agency_logo'] ?? null,
             ];
 
+            // File upload handling without requiring php_fileinfo extension on cPanel
             if ($request->hasFile('logo')) {
-                $uploadDir = public_path('uploads');
-                if (!File::exists($uploadDir)) {
-                    @File::makeDirectory($uploadDir, 0775, true, true);
-                }
-
                 $file = $request->file('logo');
-                $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->move($uploadDir, $filename);
-                $data['agency_logo'] = '/uploads/' . $filename;
+                if ($file->isValid()) {
+                    $ext = strtolower($file->getClientOriginalExtension());
+                    $allowed = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+
+                    if (!in_array($ext, $allowed)) {
+                        return redirect()->back()->with('error', 'Invalid logo image format. Allowed formats: PNG, JPG, JPEG, SVG, WEBP, GIF.')->withInput();
+                    }
+
+                    $uploadDir = public_path('uploads');
+                    if (!File::exists($uploadDir)) {
+                        @File::makeDirectory($uploadDir, 0775, true, true);
+                    }
+
+                    $filename = 'logo_' . time() . '.' . $ext;
+                    $file->move($uploadDir, $filename);
+                    $data['agency_logo'] = '/uploads/' . $filename;
+                }
             }
 
             $path = $this->getSettingsPath();

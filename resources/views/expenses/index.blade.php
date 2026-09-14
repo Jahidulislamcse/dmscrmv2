@@ -58,7 +58,7 @@
                             <form action="{{ route('expenses.destroy', $exp) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this expense log?');" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="p-1.5 text-slate-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50" title="Delete Expense">
+                                <button type="submit" class="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all" title="Delete Expense">
                                     <i class="fa fa-trash-alt"></i>
                                 </button>
                             </form>

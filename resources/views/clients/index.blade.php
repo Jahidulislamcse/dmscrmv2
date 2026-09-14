@@ -96,7 +96,7 @@
                                 <form action="{{ route('clients.destroy', $client->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this client?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-rose-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-all" title="Delete Client">
+                                    <button type="submit" class="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all" title="Delete Client">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </form>

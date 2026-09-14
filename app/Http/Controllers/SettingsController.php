@@ -72,7 +72,7 @@ class SettingsController extends Controller
                 'agency_logo' => $currentSettings['agency_logo'] ?? null,
             ];
 
-            // File upload handling without requiring php_fileinfo extension on cPanel
+            // File upload handling without requiring php_fileinfo extension
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
                 if ($file->isValid()) {
@@ -83,14 +83,35 @@ class SettingsController extends Controller
                         return redirect()->back()->with('error', 'Invalid logo image format. Allowed formats: PNG, JPG, JPEG, SVG, WEBP, GIF.')->withInput();
                     }
 
-                    $uploadDir = public_path('uploads');
-                    if (!File::exists($uploadDir)) {
-                        @File::makeDirectory($uploadDir, 0775, true, true);
+                    $filename = 'logo_' . time() . '.' . $ext;
+
+                    // Ensure upload directories exist across possible cPanel web roots
+                    $targetDirs = array_filter(array_unique([
+                        public_path('uploads'),
+                        base_path('public/uploads'),
+                        base_path('uploads'),
+                        isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads' : null,
+                    ]));
+
+                    $primaryDir = public_path('uploads');
+
+                    foreach ($targetDirs as $dir) {
+                        if (!File::exists($dir)) {
+                            @File::makeDirectory($dir, 0775, true, true);
+                        }
                     }
 
-                    $filename = 'logo_' . time() . '.' . $ext;
-                    $file->move($uploadDir, $filename);
-                    $data['agency_logo'] = '/uploads/' . $filename;
+                    $file->move($primaryDir, $filename);
+                    $sourceFile = $primaryDir . '/' . $filename;
+
+                    // Sync copy to all other target web root paths for cPanel compatibility
+                    foreach ($targetDirs as $dir) {
+                        if ($dir !== $primaryDir && File::exists($sourceFile)) {
+                            @File::copy($sourceFile, $dir . '/' . $filename);
+                        }
+                    }
+
+                    $data['agency_logo'] = 'uploads/' . $filename;
                 }
             }
 

@@ -44,7 +44,7 @@
                 <div class="flex flex-col sm:flex-row items-center gap-5">
                     <div class="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center p-2 overflow-hidden flex-shrink-0 shadow-sm">
                         @if(!empty($settings['agency_logo']))
-                            <img src="{{ asset($settings['agency_logo']) }}" alt="Agency Logo" class="max-h-full max-w-full object-contain">
+                            <img src="{{ asset(ltrim($settings['agency_logo'], '/')) }}" alt="Agency Logo" class="max-h-full max-w-full object-contain">
                         @else
                             <div class="text-center text-slate-400">
                                 <i class="fa fa-image text-2xl block mb-1"></i>

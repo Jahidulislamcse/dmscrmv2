@@ -54,7 +54,7 @@
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                         @if(!empty($agencySettings['agency_logo']))
                         <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-1 overflow-hidden shadow-md">
-                            <img src="{{ asset($agencySettings['agency_logo']) }}" alt="Logo" class="max-h-full max-w-full object-contain">
+                            <img src="{{ asset(ltrim($agencySettings['agency_logo'], '/')) }}" alt="Logo" class="max-h-full max-w-full object-contain">
                         </div>
                         @else
                         <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center font-extrabold text-white text-lg shadow-md shadow-amber-500/20">

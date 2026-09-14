@@ -15,15 +15,32 @@
     </div>
 
     <!-- Printable Invoice Card -->
+    @php $agencySettings = \App\Http\Controllers\SettingsController::getAgencySettings(); @endphp
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 space-y-8 print:shadow-none print:border-none print:p-0">
         <!-- Header -->
         <div class="flex items-start justify-between pb-6 border-b border-slate-100">
             <div>
-                <div class="inline-flex items-center gap-2 text-xl font-extrabold text-slate-900 tracking-tight mb-1">
-                    <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center text-sm">D</div>
-                    DMS Creative Agency
+                <div class="inline-flex items-center gap-3 text-xl font-extrabold text-slate-900 tracking-tight mb-1">
+                    @if(!empty($agencySettings['agency_logo']))
+                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center overflow-hidden shadow-sm">
+                            <img src="{{ asset(ltrim($agencySettings['agency_logo'], '/')) }}" alt="Logo" class="max-h-full max-w-full object-contain">
+                        </div>
+                    @else
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm font-extrabold shadow-md shadow-amber-500/20">
+                            {{ strtoupper(substr($agencySettings['agency_name'] ?? 'D', 0, 1)) }}
+                        </div>
+                    @endif
+                    <span>{{ $agencySettings['agency_name'] ?? 'DMS Creative Agency' }}</span>
                 </div>
-                <p class="text-xs text-slate-500">Dhaka, Bangladesh · info@dmssoftware.agency</p>
+                <p class="text-xs text-slate-500 mt-1">
+                    {{ $agencySettings['agency_address'] ?? 'Dhaka, Bangladesh' }}
+                    @if(!empty($agencySettings['agency_email']))
+                        · <a href="mailto:{{ $agencySettings['agency_email'] }}" class="text-slate-600 font-semibold">{{ $agencySettings['agency_email'] }}</a>
+                    @endif
+                    @if(!empty($agencySettings['agency_phone']))
+                        · <span>{{ $agencySettings['agency_phone'] }}</span>
+                    @endif
+                </p>
             </div>
 
             <div class="text-right">
@@ -47,7 +64,10 @@
             <div class="text-right">
                 <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Issued By</span>
                 <h4 class="text-sm font-bold text-slate-900">{{ $invoice->createdBy->name ?? 'Admin' }}</h4>
-                <p class="text-slate-500">DMS Creative Agency</p>
+                <p class="text-slate-500">{{ $agencySettings['agency_name'] ?? 'DMS Creative Agency' }}</p>
+                @if(!empty($agencySettings['tax_id']))
+                <p class="text-[11px] text-slate-400 font-mono">Tax / BIN ID: {{ $agencySettings['tax_id'] }}</p>
+                @endif
             </div>
         </div>
 

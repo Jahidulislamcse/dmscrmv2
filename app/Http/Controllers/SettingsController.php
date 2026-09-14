@@ -15,7 +15,6 @@ class SettingsController extends Controller
 
     public static function getAgencySettings(): array
     {
-        $path = storage_path('app/settings.json');
         $defaults = [
             'agency_name' => config('app.name', 'DMS Creative Agency'),
             'agency_email' => env('COMPANY_EMAIL', 'info@dmssoftware.agency'),
@@ -26,11 +25,16 @@ class SettingsController extends Controller
             'agency_logo' => null,
         ];
 
-        if (File::exists($path)) {
-            $json = json_decode(File::get($path), true);
-            if (is_array($json)) {
-                return array_merge($defaults, $json);
+        try {
+            $path = storage_path('app/settings.json');
+            if (File::exists($path)) {
+                $json = json_decode(File::get($path), true);
+                if (is_array($json)) {
+                    return array_merge($defaults, $json);
+                }
             }
+        } catch (\Throwable $e) {
+            // Fallback to default settings
         }
 
         return $defaults;
@@ -47,86 +51,98 @@ class SettingsController extends Controller
 
     public function updateAgency(Request $request)
     {
-        $validated = $request->validate([
-            'agency_name' => 'required|string|max:255',
-            'agency_email' => 'required|email|max:255',
-            'agency_phone' => 'required|string|max:100',
-            'agency_address' => 'required|string|max:500',
-            'agency_currency' => 'required|string|max:10',
-            'tax_id' => 'nullable|string|max:100',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
-        ]);
+        try {
+            $validated = $request->validate([
+                'agency_name' => 'required|string|max:255',
+                'agency_email' => 'required|email|max:255',
+                'agency_phone' => 'required|string|max:100',
+                'agency_address' => 'required|string|max:500',
+                'agency_currency' => 'required|string|max:10',
+                'tax_id' => 'nullable|string|max:100',
+                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
+            ]);
 
-        $currentSettings = self::getAgencySettings();
-        $data = [
-            'agency_name' => $validated['agency_name'],
-            'agency_email' => $validated['agency_email'],
-            'agency_phone' => $validated['agency_phone'],
-            'agency_address' => $validated['agency_address'],
-            'agency_currency' => $validated['agency_currency'],
-            'tax_id' => $validated['tax_id'] ?? null,
-            'agency_logo' => $currentSettings['agency_logo'] ?? null,
-        ];
+            $currentSettings = self::getAgencySettings();
+            $data = [
+                'agency_name' => $validated['agency_name'],
+                'agency_email' => $validated['agency_email'],
+                'agency_phone' => $validated['agency_phone'],
+                'agency_address' => $validated['agency_address'],
+                'agency_currency' => $validated['agency_currency'],
+                'tax_id' => $validated['tax_id'] ?? null,
+                'agency_logo' => $currentSettings['agency_logo'] ?? null,
+            ];
 
-        if ($request->hasFile('logo')) {
-            $uploadDir = public_path('uploads');
-            if (!File::exists($uploadDir)) {
-                File::makeDirectory($uploadDir, 0755, true);
+            if ($request->hasFile('logo')) {
+                $uploadDir = public_path('uploads');
+                if (!File::exists($uploadDir)) {
+                    @File::makeDirectory($uploadDir, 0775, true, true);
+                }
+
+                $file = $request->file('logo');
+                $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadDir, $filename);
+                $data['agency_logo'] = '/uploads/' . $filename;
             }
 
-            $file = $request->file('logo');
-            $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            $data['agency_logo'] = '/uploads/' . $filename;
+            $path = $this->getSettingsPath();
+            $directory = dirname($path);
+
+            if (!File::exists($directory)) {
+                @File::makeDirectory($directory, 0775, true, true);
+            }
+
+            File::put($path, json_encode($data, JSON_PRETTY_PRINT));
+
+            return redirect()->route('settings.index')->with('success', 'Agency settings & site logo updated successfully!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Error saving settings: ' . $e->getMessage())->withInput();
         }
-
-        $path = $this->getSettingsPath();
-        $directory = dirname($path);
-
-        if (!File::exists($directory)) {
-            File::makeDirectory($directory, 0755, true);
-        }
-
-        File::put($path, json_encode($data, JSON_PRETTY_PRINT));
-
-        return redirect()->route('settings.index')->with('success', 'Agency settings & site logo updated successfully!');
     }
 
     public function updateProfile(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
+        try {
+            /** @var User $user */
+            $user = Auth::user();
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
-            'color' => 'nullable|string|max:50',
-        ]);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+                'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+                'color' => 'nullable|string|max:50',
+            ]);
 
-        $user->update($validated);
+            $user->update($validated);
 
-        return redirect()->route('settings.index')->with('success', 'Account profile updated successfully!');
+            return redirect()->route('settings.index')->with('success', 'Account profile updated successfully!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Error updating profile: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function updatePassword(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
+        try {
+            /** @var User $user */
+            $user = Auth::user();
 
-        $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|min:6|confirmed',
-        ]);
+            $request->validate([
+                'current_password' => 'required',
+                'password' => 'required|min:6|confirmed',
+            ]);
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->withErrors(['current_password' => 'The provided current password does not match.']);
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'The provided current password does not match.']);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+
+            return redirect()->route('settings.index')->with('success', 'Password changed successfully!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Error changing password: ' . $e->getMessage());
         }
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->route('settings.index')->with('success', 'Password changed successfully!');
     }
 }

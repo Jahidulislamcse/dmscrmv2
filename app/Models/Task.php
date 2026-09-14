@@ -21,6 +21,8 @@ class Task extends Model
         'priority',
         'approval_status',
         'notes',
+        'checklist',
+        'attachments',
         'deadline',
         'scheduled_date',
         'estimated_hours',
@@ -37,6 +39,8 @@ class Task extends Model
         'recurring_end_date' => 'date',
         'recurring_enabled' => 'boolean',
         'estimated_hours' => 'decimal:2',
+        'checklist' => 'array',
+        'attachments' => 'array',
     ];
 
     public function client()
@@ -82,5 +86,21 @@ class Task extends Model
     public function progresses()
     {
         return $this->hasMany(TaskProgress::class);
+    }
+
+    // Helper for checklist progress
+    public function getChecklistProgressAttribute()
+    {
+        $items = $this->checklist ?? [];
+        if (empty($items)) return ['done' => 0, 'total' => 0, 'percent' => 0];
+
+        $total = count($items);
+        $done = 0;
+        foreach ($items as $item) {
+            if (!empty($item['completed'])) $done++;
+        }
+
+        $percent = $total > 0 ? round(($done / $total) * 100) : 0;
+        return ['done' => $done, 'total' => $total, 'percent' => $percent];
     }
 }

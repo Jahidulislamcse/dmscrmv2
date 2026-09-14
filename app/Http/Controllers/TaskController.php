@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use App\Models\{Task, TaskProgress, TaskApprovalComment, Notification, Client, User, Service};
 
 class TaskController extends Controller
@@ -55,7 +56,19 @@ class TaskController extends Controller
         $teamMembers = User::where('active', true)->orderBy('name')->get();
         $services = Service::where('active', true)->orderBy('name')->get();
 
-        return view('tasks.index', compact('allTasks', 'kanbanTasks', 'clients', 'teamMembers', 'services'));
+        // Employee workload summary data
+        $employeeStats = $teamMembers->map(function($member) use ($allTasks) {
+            $userTasks = $allTasks->where('assigned_to', $member->id);
+            return [
+                'user' => $member,
+                'total' => $userTasks->count(),
+                'in_progress' => $userTasks->where('status', 'in_progress')->count(),
+                'done' => $userTasks->where('status', 'done')->count(),
+                'pending' => $userTasks->where('status', 'pending')->count(),
+            ];
+        });
+
+        return view('tasks.index', compact('allTasks', 'kanbanTasks', 'clients', 'teamMembers', 'services', 'employeeStats'));
     }
 
     public function store(Request $request)
@@ -75,10 +88,46 @@ class TaskController extends Controller
             'recurring_enabled' => 'nullable|boolean',
         ]);
 
+        // Process attachments if uploaded
+        $attachmentsList = [];
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $uploadDir = public_path('uploads/tasks');
+            if (!File::exists($uploadDir)) {
+                File::makeDirectory($uploadDir, 0755, true);
+            }
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+            $file->move($uploadDir, $filename);
+            $attachmentsList[] = [
+                'name' => $file->getClientOriginalName(),
+                'url' => asset('uploads/tasks/' . $filename),
+                'path' => 'uploads/tasks/' . $filename,
+                'uploaded_at' => now()->toDateTimeString(),
+            ];
+        }
+
+        // Process checklist items if provided as array/lines
+        $checklistItems = [];
+        if ($request->filled('checklist_raw')) {
+            $lines = array_filter(explode("\n", str_replace("\r", "", $request->checklist_raw)));
+            foreach ($lines as $idx => $line) {
+                $lineText = trim($line);
+                if (!empty($lineText)) {
+                    $checklistItems[] = [
+                        'id' => $idx + 1,
+                        'title' => $lineText,
+                        'completed' => false,
+                    ];
+                }
+            }
+        }
+
         $task = Task::create(array_merge($validated, [
             'assigned_by' => $user->id,
             'status' => 'pending',
             'recurring_enabled' => $request->boolean('recurring_enabled', false),
+            'checklist' => $checklistItems,
+            'attachments' => $attachmentsList,
         ]));
 
         if ($request->wantsJson()) {
@@ -102,7 +151,26 @@ class TaskController extends Controller
             'status' => 'required|in:pending,in_progress,done_pending_review,done',
         ]);
 
-        $task->update($validated);
+        $attachmentsList = $task->attachments ?? [];
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $uploadDir = public_path('uploads/tasks');
+            if (!File::exists($uploadDir)) {
+                File::makeDirectory($uploadDir, 0755, true);
+            }
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+            $file->move($uploadDir, $filename);
+            $attachmentsList[] = [
+                'name' => $file->getClientOriginalName(),
+                'url' => asset('uploads/tasks/' . $filename),
+                'path' => 'uploads/tasks/' . $filename,
+                'uploaded_at' => now()->toDateTimeString(),
+            ];
+        }
+
+        $task->update(array_merge($validated, [
+            'attachments' => $attachmentsList,
+        ]));
 
         if ($request->wantsJson()) {
             return response()->json($task->load(['client', 'assignedTo']));
@@ -126,6 +194,70 @@ class TaskController extends Controller
         }
 
         return redirect()->route('tasks.index')->with('success', "Task status updated to " . ucfirst(str_replace('_', ' ', $request->status)) . "!");
+    }
+
+    public function updateChecklist(Request $request, Task $task)
+    {
+        $items = $request->input('checklist', []);
+        $task->checklist = $items;
+        $task->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Checklist updated', 'task' => $task]);
+        }
+
+        return redirect()->back()->with('success', 'Task checklist updated!');
+    }
+
+    public function uploadAttachment(Request $request, Task $task)
+    {
+        $request->validate([
+            'attachment' => 'required|file|max:10240', // max 10MB
+        ]);
+
+        $attachmentsList = $task->attachments ?? [];
+        $file = $request->file('attachment');
+        $uploadDir = public_path('uploads/tasks');
+        if (!File::exists($uploadDir)) {
+            File::makeDirectory($uploadDir, 0755, true);
+        }
+        $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+        $file->move($uploadDir, $filename);
+        $attachmentsList[] = [
+            'name' => $file->getClientOriginalName(),
+            'url' => asset('uploads/tasks/' . $filename),
+            'path' => 'uploads/tasks/' . $filename,
+            'uploaded_at' => now()->toDateTimeString(),
+        ];
+
+        $task->attachments = $attachmentsList;
+        $task->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Attachment uploaded', 'attachments' => $attachmentsList]);
+        }
+
+        return redirect()->back()->with('success', 'File attachment uploaded successfully!');
+    }
+
+    public function deleteAttachment(Request $request, Task $task, $index)
+    {
+        $attachmentsList = $task->attachments ?? [];
+        if (isset($attachmentsList[$index])) {
+            $filePath = public_path($attachmentsList[$index]['path']);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+            array_splice($attachmentsList, $index, 1);
+            $task->attachments = array_values($attachmentsList);
+            $task->save();
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Attachment deleted']);
+        }
+
+        return redirect()->back()->with('success', 'Attachment deleted successfully!');
     }
 
     public function addProgress(Request $request, Task $task)

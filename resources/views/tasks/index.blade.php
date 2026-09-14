@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Agency Task Board')
+@section('title', 'Agency Task Board & Deliverables')
 @section('header_title', 'Agency Tasks & Operations Board')
 
 @section('content')
-<div class="space-y-6" x-data="{ viewMode: 'kanban', openAddModal: false, openEditModal: false, activeTask: {} }">
+<div class="space-y-6" x-data="{ viewMode: 'kanban', openAddModal: false, openEditModal: false, openDetailModal: false, openEmployeeModal: false, activeTask: {} }">
 
     <!-- Top Action Bar & Metrics Header -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
             <h2 class="text-xl font-bold text-slate-900 tracking-tight">Agency Task & Operations Board</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage deliverables, assign team workloads, and track task progress.</p>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage deliverables, assign team workloads, checklist subtasks, and track employee progress.</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
@@ -30,7 +30,13 @@
                 </button>
             </div>
 
-            <button @click="openAddModal = true" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-2 transition-all">
+            <!-- Employee Workload Button -->
+            <button @click="openEmployeeModal = true" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm flex items-center gap-2 transition-all">
+                <i class="fa fa-users-gear text-amber-400"></i>
+                <span>Employee Tracking</span>
+            </button>
+
+            <button @click="openAddModal = true" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-2 transition-all">
                 <i class="fa fa-plus-circle text-sm"></i>
                 <span>Create New Task</span>
             </button>
@@ -244,8 +250,14 @@
                 <tbody class="divide-y divide-slate-100 text-xs font-medium">
                     @forelse($allTasks as $task)
                     <tr class="hover:bg-slate-50/80 transition-all">
-                        <td class="py-3.5 px-4 font-bold text-slate-900">
+                        <td class="py-3.5 px-4 font-bold text-slate-900 cursor-pointer hover:text-amber-600"
+                            @click="activeTask = @js($task); openDetailModal = true">
                             {{ $task->title }}
+                            @if(!empty($task->checklist))
+                                <span class="ml-2 text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded font-normal border border-amber-200">
+                                    <i class="fa fa-tasks"></i> {{ $task->checklist_progress['done'] }}/{{ $task->checklist_progress['total'] }}
+                                </span>
+                            @endif
                         </td>
                         <td class="py-3.5 px-4 text-slate-600">
                             {{ $task->client->name ?? '—' }}
@@ -283,7 +295,10 @@
                         </td>
                         <td class="py-3.5 px-4 text-right">
                             <div class="inline-flex items-center gap-2 justify-end">
-                                <button type="button" @click="activeTask = @js($task); openEditModal = true" class="px-2 py-1 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all inline-flex items-center gap-1" title="Edit Task">
+                                <button type="button" @click="activeTask = @js($task); openDetailModal = true" class="px-2 py-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-all" title="View Detail">
+                                    <i class="fa fa-eye"></i> View
+                                </button>
+                                <button type="button" @click="activeTask = @js($task); openEditModal = true" class="px-2 py-1 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all" title="Edit Task">
                                     <i class="fa fa-edit"></i> Edit
                                 </button>
                                 <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
@@ -310,24 +325,24 @@
 
     <!-- Create Task Modal -->
     <div x-show="openAddModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4" @click.outside="openAddModal = false">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto" @click.outside="openAddModal = false">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h3 class="text-base font-bold text-slate-900">Create & Assign New Task</h3>
                 <button @click="openAddModal = false" class="text-slate-400 hover:text-slate-700"><i class="fa fa-times"></i></button>
             </div>
 
-            <form action="{{ route('tasks.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Task Title *</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Task Title *</label>
                     <input type="text" name="title" required placeholder="e.g. Design 10 Social Media Graphics"
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500">
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Assign To Team Member *</label>
-                        <select name="assigned_to" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Assign To Team Member *</label>
+                        <select name="assigned_to" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                             @foreach($teamMembers as $m)
                                 <option value="{{ $m->id }}" {{ auth()->id() == $m->id ? 'selected' : '' }}>
                                     {{ $m->name }} ({{ ucfirst($m->role) }})
@@ -337,8 +352,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Priority *</label>
-                        <select name="priority" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Priority *</label>
+                        <select name="priority" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                             <option value="medium">Medium Priority</option>
                             <option value="high">High Priority</option>
                             <option value="low">Low Priority</option>
@@ -348,8 +363,8 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Related Client</label>
-                        <select name="client_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Related Client</label>
+                        <select name="client_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                             <option value="">— Select Client (Optional) —</option>
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}">{{ $client->name }} ({{ $client->company }})</option>
@@ -358,21 +373,33 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Deadline Date</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Deadline Date</label>
                         <input type="date" name="deadline" value="{{ date('Y-m-d', strtotime('+3 days')) }}"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500">
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Task Details & Instructions</label>
-                    <textarea name="notes" rows="3" placeholder="Specify brand requirements, dimensions, or deliverables..."
-                              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-brand-500"></textarea>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Task Details & Instructions</label>
+                    <textarea name="notes" rows="2" placeholder="Specify requirements, dimensions, or deliverables..."
+                              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Checklist Subtasks (One per line)</label>
+                    <textarea name="checklist_raw" rows="3" placeholder="Draft banner concepts&#10;Export high res PNGs&#10;Upload for client review"
+                              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Attach Deliverables / Brief File</label>
+                    <input type="file" name="attachment"
+                           class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer">
                 </div>
 
                 <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
                     <button type="button" @click="openAddModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow-md">Create & Assign Task</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md">Create & Assign Task</button>
                 </div>
             </form>
         </div>
@@ -380,13 +407,13 @@
 
     <!-- Edit Task Modal -->
     <div x-show="openEditModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4" @click.outside="openEditModal = false">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto" @click.outside="openEditModal = false">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h3 class="text-base font-bold text-slate-900">Edit Task Details</h3>
                 <button @click="openEditModal = false" class="text-slate-400 hover:text-slate-700"><i class="fa fa-times"></i></button>
             </div>
 
-            <form :action="`{{ url('/tasks') }}/${activeTask.id}`" method="POST" class="space-y-4">
+            <form :action="`{{ url('/tasks') }}/${activeTask.id}`" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
@@ -449,6 +476,12 @@
                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500"></textarea>
                 </div>
 
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Add New Attachment File</label>
+                    <input type="file" name="attachment"
+                           class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer">
+                </div>
+
                 <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
                     <button type="button" @click="openEditModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
                     <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md">Update Task</button>
@@ -456,5 +489,186 @@
             </form>
         </div>
     </div>
+
+    <!-- TASK DETAIL & TRACKING MODAL -->
+    <div x-show="openDetailModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto" @click.outside="openDetailModal = false">
+            
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-2 py-0.5 text-[10px] font-extrabold uppercase rounded bg-amber-100 text-amber-800" x-text="activeTask.priority ? activeTask.priority + ' priority' : 'Task'"></span>
+                        <span class="text-xs font-bold text-slate-500" x-text="activeTask.client ? activeTask.client.name : 'Internal Task'"></span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900" x-text="activeTask.title"></h3>
+                </div>
+                <button @click="openDetailModal = false" class="text-slate-400 hover:text-slate-700 text-sm p-1"><i class="fa fa-times"></i></button>
+            </div>
+
+            <!-- Notes & Info -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80 space-y-2">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Instructions & Details</h4>
+                <p class="text-xs text-slate-600 whitespace-pre-line" x-text="activeTask.notes || 'No detailed instructions provided.'"></p>
+                <div class="flex items-center gap-4 text-xs text-slate-500 pt-2 border-t border-slate-200/60">
+                    <div><strong>Assignee:</strong> <span x-text="activeTask.assigned_to ? activeTask.assigned_to.name : (activeTask.assigned_to_user ? activeTask.assigned_to_user.name : 'Team Member')"></span></div>
+                    <div><strong>Deadline:</strong> <span x-text="activeTask.deadline ? activeTask.deadline.substring(0,10) : 'No Deadline'"></span></div>
+                </div>
+            </div>
+
+            <!-- Subtask Checklist Section -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                    <span><i class="fa fa-tasks text-amber-500 mr-1"></i> Subtask Checklist</span>
+                </h4>
+
+                <template x-if="activeTask.checklist && activeTask.checklist.length > 0">
+                    <div class="space-y-2 bg-white rounded-xl border border-slate-200 p-3">
+                        <template x-for="(item, idx) in activeTask.checklist" :key="idx">
+                            <div class="flex items-center justify-between text-xs py-1 px-2 hover:bg-slate-50 rounded">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" :checked="item.completed"
+                                           @change="item.completed = !item.completed; $nextTick(() => { 
+                                               fetch(`{{ url('/tasks') }}/${activeTask.id}/checklist`, {
+                                                   method: 'POST',
+                                                   headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                                   body: JSON.stringify({ checklist: activeTask.checklist })
+                                               });
+                                           })"
+                                           class="rounded text-amber-500 focus:ring-amber-400">
+                                    <span :class="item.completed ? 'line-through text-slate-400' : 'text-slate-800 font-semibold'" x-text="item.title"></span>
+                                </label>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <template x-if="!activeTask.checklist || activeTask.checklist.length === 0">
+                    <p class="text-xs text-slate-400 italic">No checklist subtasks added yet.</p>
+                </template>
+            </div>
+
+            <!-- Attachments Section -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    <i class="fa fa-paperclip text-amber-500 mr-1"></i> Task Attachments & Deliverables
+                </h4>
+
+                <template x-if="activeTask.attachments && activeTask.attachments.length > 0">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <template x-for="(att, idx) in activeTask.attachments" :key="idx">
+                            <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
+                                <a :href="att.url" target="_blank" class="font-bold text-amber-600 hover:underline truncate max-w-[180px]" x-text="att.name"></a>
+                                <form :action="`{{ url('/tasks') }}/${activeTask.id}/attachments/${idx}`" method="POST" onsubmit="return confirm('Remove attachment?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700 text-xs p-1"><i class="fa fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <form :action="`{{ url('/tasks') }}/${activeTask.id}/attachments`" method="POST" enctype="multipart/form-data" class="flex items-center gap-2 pt-1">
+                    @csrf
+                    <input type="file" name="attachment" required class="text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                    <button type="submit" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-slate-800">Upload</button>
+                </form>
+            </div>
+
+            <!-- Employee Progress Tracking Log Section -->
+            <div class="space-y-3 border-t border-slate-100 pt-4">
+                <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    <i class="fa fa-user-clock text-amber-500 mr-1"></i> Employee Progress & Activity Tracking
+                </h4>
+
+                <!-- Add Progress Log Form -->
+                <form :action="`{{ url('/tasks') }}/${activeTask.id}/progress`" method="POST" class="bg-amber-50/50 p-3 rounded-xl border border-amber-200 space-y-2">
+                    @csrf
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="note" required placeholder="Log progress note (e.g. Completed initial design mockups)..."
+                               class="flex-1 px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium focus:outline-none focus:border-amber-500">
+                        <input type="number" name="done" placeholder="Done" class="w-16 px-2 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium">
+                        <input type="number" name="total" placeholder="Total" class="w-16 px-2 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium">
+                        <button type="submit" class="px-3 py-1.5 bg-amber-500 text-white font-bold text-xs rounded-lg hover:bg-amber-600 shadow-sm">Log</button>
+                    </div>
+                </form>
+
+                <!-- Progress History -->
+                <template x-if="activeTask.progresses && activeTask.progresses.length > 0">
+                    <div class="space-y-2 max-h-40 overflow-y-auto">
+                        <template x-for="prog in activeTask.progresses" :key="prog.id">
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70 text-xs space-y-1">
+                                <div class="flex items-center justify-between text-slate-500 font-semibold">
+                                    <span class="font-bold text-slate-800" x-text="prog.user ? prog.user.name : 'Team Member'"></span>
+                                    <span x-text="prog.created_at ? prog.created_at.substring(0,10) : ''"></span>
+                                </div>
+                                <p class="text-slate-700" x-text="prog.note"></p>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+            <div class="pt-2 flex justify-end border-t border-slate-100">
+                <button type="button" @click="openDetailModal = false" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMPLOYEE WORKLOAD & PROGRESS TRACKING MODAL -->
+    <div x-show="openEmployeeModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto" @click.outside="openEmployeeModal = false">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900">Employee Workload & Task Tracking</h3>
+                    <p class="text-xs text-slate-500 font-medium">Overview of team members, active task assignments, and completion progress.</p>
+                </div>
+                <button @click="openEmployeeModal = false" class="text-slate-400 hover:text-slate-700"><i class="fa fa-times"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                @foreach($employeeStats as $stat)
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-sm" style="background-color: {{ $stat['user']->color ?? '#f59e0b' }}">
+                                    {{ strtoupper(substr($stat['user']->name, 0, 2)) }}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-xs">{{ $stat['user']->name }}</h4>
+                                    <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{{ ucfirst($stat['user']->role) }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs font-bold">
+                                <span class="px-2 py-0.5 rounded bg-slate-200 text-slate-700" title="Total Tasks">{{ $stat['total'] }} Total</span>
+                                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800" title="In Progress">{{ $stat['in_progress'] }} In Progress</span>
+                                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800" title="Completed">{{ $stat['done'] }} Done</span>
+                            </div>
+                        </div>
+
+                        <!-- Workload Progress Meter -->
+                        @php 
+                            $pct = $stat['total'] > 0 ? round(($stat['done'] / $stat['total']) * 100) : 0;
+                        @endphp
+                        <div class="space-y-1 pt-1">
+                            <div class="flex justify-between text-[10px] font-bold text-slate-500">
+                                <span>Task Completion Progress</span>
+                                <span>{{ $pct }}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                <div class="bg-amber-500 h-2 rounded-full transition-all duration-300" style="width: {{ $pct }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="pt-3 flex justify-end border-t border-slate-100">
+                <button type="button" @click="openEmployeeModal = false" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection

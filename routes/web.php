@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class);
     Route::post('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
     Route::post('/tasks/{task}/progress', [TaskController::class, 'addProgress'])->name('tasks.add-progress');
+    Route::post('/tasks/{task}/checklist', [TaskController::class, 'updateChecklist'])->name('tasks.update-checklist');
+    Route::post('/tasks/{task}/attachments', [TaskController::class, 'uploadAttachment'])->name('tasks.upload-attachment');
+    Route::delete('/tasks/{task}/attachments/{index}', [TaskController::class, 'deleteAttachment'])->name('tasks.delete-attachment');
 
     // Requisition Approval Hub
     Route::get('/requisitions', [RequisitionController::class, 'index'])->name('requisitions.index');

@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     LeadController,
     MeetingController,
     SettingsController,
-    TaskController
+    TaskController,
+    NotificationController
 };
 
 // ── Guest / Auth Routes ──
@@ -28,6 +29,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware(['auth'])->group(function () {
     Route::get('/', fn() => redirect()->route('dashboard'));
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Notifications Center
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
     // Meetings & Schedule Management
     Route::resource('meetings', MeetingController::class);

@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/meetings/{meeting}/status', [MeetingController::class, 'updateStatus'])->name('meetings.update-status');
 
     // CRM Pipeline Management
-    Route::resource('crm', LeadController::class);
+    Route::resource('crm', LeadController::class)->parameters(['crm' => 'lead']);
     Route::post('/crm/{lead}/stage', [LeadController::class, 'updateStage'])->name('crm.update-stage');
     Route::post('/crm/{lead}/timeline', [LeadController::class, 'addTimelineNote'])->name('crm.add-timeline');
     Route::post('/crm/{lead}/convert', [LeadController::class, 'convertToRequisition'])->name('crm.convert');

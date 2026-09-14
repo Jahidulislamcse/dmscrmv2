@@ -4,7 +4,7 @@
 @section('header_title', 'Agency Tasks & Operations Board')
 
 @section('content')
-<div class="space-y-6" x-data="{ viewMode: 'kanban', openAddModal: false, openDetailModal: false, activeTask: null }">
+<div class="space-y-6" x-data="{ viewMode: 'kanban', openAddModal: false, openEditModal: false, activeTask: {} }">
 
     <!-- Top Action Bar & Metrics Header -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -282,13 +282,18 @@
                             {{ $task->deadline ? $task->deadline->format('M d, Y') : '—' }}
                         </td>
                         <td class="py-3.5 px-4 text-right">
-                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all" title="Delete Task">
-                                    <i class="fa fa-trash-alt"></i>
+                            <div class="inline-flex items-center gap-2 justify-end">
+                                <button type="button" @click="activeTask = @js($task); openEditModal = true" class="px-2 py-1 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all inline-flex items-center gap-1" title="Edit Task">
+                                    <i class="fa fa-edit"></i> Edit
                                 </button>
-                            </form>
+                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all" title="Delete Task">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -368,6 +373,85 @@
                 <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
                     <button type="button" @click="openAddModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
                     <button type="submit" class="px-5 py-2 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow-md">Create & Assign Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div x-show="openEditModal" x-cloak class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4" @click.outside="openEditModal = false">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Edit Task Details</h3>
+                <button @click="openEditModal = false" class="text-slate-400 hover:text-slate-700"><i class="fa fa-times"></i></button>
+            </div>
+
+            <form :action="`{{ url('/tasks') }}/${activeTask.id}`" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Task Title *</label>
+                    <input type="text" name="title" x-model="activeTask.title" required
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Assign To *</label>
+                        <select name="assigned_to" x-model="activeTask.assigned_to" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                            @foreach($teamMembers as $m)
+                                <option value="{{ $m->id }}">{{ $m->name }} ({{ ucfirst($m->role) }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Priority *</label>
+                        <select name="priority" x-model="activeTask.priority" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                            <option value="high">High Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Status *</label>
+                        <select name="status" x-model="activeTask.status" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                            <option value="pending">📌 To Do / Pending</option>
+                            <option value="in_progress">⚡ In Progress</option>
+                            <option value="done_pending_review">👀 Pending Review</option>
+                            <option value="done">✅ Completed</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Related Client</label>
+                        <select name="client_id" x-model="activeTask.client_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                            <option value="">— None (Internal Task) —</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->name }} ({{ $client->company }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Deadline Date</label>
+                    <input type="date" name="deadline" :value="activeTask.deadline ? activeTask.deadline.substring(0, 10) : ''"
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Task Notes & Instructions</label>
+                    <textarea name="notes" rows="3" x-model="activeTask.notes"
+                              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
+                    <button type="button" @click="openEditModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md">Update Task</button>
                 </div>
             </form>
         </div>

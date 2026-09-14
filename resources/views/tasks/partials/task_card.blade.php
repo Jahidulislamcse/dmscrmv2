@@ -71,6 +71,10 @@
             </select>
         </form>
 
+        <button type="button" @click="activeTask = @js($task); openEditModal = true" class="px-2 py-1 text-[10px] font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all flex items-center gap-1" title="Edit Task">
+            <i class="fa fa-edit"></i> Edit
+        </button>
+
         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
             @csrf
             @method('DELETE')

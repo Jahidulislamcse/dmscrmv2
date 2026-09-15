@@ -151,10 +151,24 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
-                    @if(auth()->user()->canAccess('tasks'))
+                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
-                    <a href="{{ route('tasks.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('tasks.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                    @if(auth()->user()->canAccess('my_tasks'))
+                    <a href="{{ route('tasks.my-tasks') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('tasks.my-tasks') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-user-check w-4 text-center"></i>
+                        <span>My Tasks</span>
+                        @php $myOpenCount = \App\Models\Task::where('assigned_to', auth()->id())->where('status', '!=', 'done')->whereNull('parent_task_id')->count(); @endphp
+                        @if($myOpenCount > 0)
+                        <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            {{ $myOpenCount }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('tasks'))
+                    <a href="{{ route('tasks.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('tasks.index') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-list-check w-4 text-center"></i>
                         <span>Task Board</span>
                         @php $openTaskCount = \App\Models\Task::where('status', '!=', 'done')->whereNull('parent_task_id')->count(); @endphp
@@ -164,6 +178,7 @@
                         </span>
                         @endif
                     </a>
+                    @endif
                     @endif
 
                     <!-- AGENCY MANAGEMENT -->

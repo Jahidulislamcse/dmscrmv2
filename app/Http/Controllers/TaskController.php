@@ -283,6 +283,63 @@ class TaskController extends Controller
         return redirect()->back()->with('success', 'Progress update logged successfully!');
     }
 
+    public function myTasks(Request $request)
+    {
+        $user = Auth::user();
+        $query = Task::with(['client', 'assignedTo', 'assignedBy', 'progresses.user', 'subtasks', 'service'])
+            ->where('assigned_to', $user->id)
+            ->whereNull('parent_task_id');
+
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        $allTasks = $query->latest()->get();
+
+        if ($request->wantsJson()) {
+            return response()->json($allTasks);
+        }
+
+        $kanbanTasks = [
+            'pending' => $allTasks->where('status', 'pending'),
+            'in_progress' => $allTasks->where('status', 'in_progress'),
+            'done_pending_review' => $allTasks->where('status', 'done_pending_review'),
+            'done' => $allTasks->where('status', 'done'),
+        ];
+
+        // Personal Productivity Metrics
+        $totalCount = $allTasks->count();
+        $pendingCount = $kanbanTasks['pending']->count();
+        $inProgressCount = $kanbanTasks['in_progress']->count();
+        $reviewCount = $kanbanTasks['done_pending_review']->count();
+        $doneCount = $kanbanTasks['done']->count();
+
+        $overdueCount = $allTasks->filter(function($t) {
+            return $t->deadline && $t->deadline->isPast() && $t->status !== 'done';
+        })->count();
+
+        $completionRate = $totalCount > 0 ? round(($doneCount / $totalCount) * 100) : 0;
+
+        return view('tasks.my_tasks', compact(
+            'allTasks',
+            'kanbanTasks',
+            'totalCount',
+            'pendingCount',
+            'inProgressCount',
+            'reviewCount',
+            'doneCount',
+            'overdueCount',
+            'completionRate'
+        ));
+    }
+
     public function destroy(Task $task)
     {
         $task->delete();

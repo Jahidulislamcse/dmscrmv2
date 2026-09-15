@@ -64,6 +64,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('services', ServiceController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 
+    // My Assigned Tasks
+    Route::middleware('feature:my_tasks')->group(function () {
+        Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.my-tasks');
+    });
+
     // Task Board & Deliverables Operations
     Route::middleware('feature:tasks')->group(function () {
         Route::resource('tasks', TaskController::class);

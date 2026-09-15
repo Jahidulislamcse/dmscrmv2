@@ -10,6 +10,7 @@ class RolePermission
     {
         return [
             'dashboard'    => 'Overview Dashboard',
+            'my_tasks'     => 'My Assigned Tasks',
             'crm'          => 'CRM Leads Pipeline',
             'meetings'     => 'Meetings Schedule',
             'requisitions' => 'Requisitions Hub',
@@ -42,16 +43,16 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses', 'settings'],
-            'admin' => ['dashboard', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses'],
-            'sales' => ['dashboard', 'crm', 'meetings', 'requisitions', 'clients', 'tasks'],
-            'smm' => ['dashboard', 'clients', 'meetings', 'tasks'],
-            'designer' => ['dashboard', 'meetings', 'tasks'],
-            'motion' => ['dashboard', 'meetings', 'tasks'],
-            'video' => ['dashboard', 'meetings', 'tasks'],
-            'seo' => ['dashboard', 'meetings', 'tasks'],
-            'mediabuyer' => ['dashboard', 'meetings', 'tasks'],
-            'employee' => ['dashboard', 'meetings', 'tasks'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'tasks'],
+            'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
         ];
     }
 

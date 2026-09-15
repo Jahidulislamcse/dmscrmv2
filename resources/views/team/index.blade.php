@@ -118,13 +118,13 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-900 text-white text-[11px] font-extrabold uppercase tracking-wider">
-                            <th class="py-4 px-5 min-w-[200px]">System Role</th>
+                            <th class="py-4 px-5 min-w-[220px] sticky left-0 z-20 bg-slate-900 border-r border-slate-800 shadow-[4px_0_8px_-2px_rgba(0,0,0,0.3)]">System Role</th>
                             @foreach($features as $fKey => $fLabel)
-                                <th class="py-4 px-3 text-center whitespace-nowrap min-w-[110px]" title="{{ $fLabel }}">
+                                <th class="py-4 px-3 text-center whitespace-nowrap min-w-[120px]" title="{{ $fLabel }}">
                                     {{ $fLabel }}
                                 </th>
                             @endforeach
-                            <th class="py-4 px-4 text-center">Quick Actions</th>
+                            <th class="py-4 px-4 text-center whitespace-nowrap">Quick Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-xs font-medium">
@@ -134,7 +134,7 @@
                             $rolePerms = $permissions[$rKey] ?? ['dashboard'];
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition-all {{ $isOwner ? 'bg-amber-50/30' : '' }}">
-                            <td class="py-4 px-5">
+                            <td class="py-4 px-5 sticky left-0 z-10 border-r border-slate-200/80 shadow-[4px_0_8px_-2px_rgba(0,0,0,0.05)] {{ $isOwner ? 'bg-amber-50' : 'bg-white' }}">
                                 <div class="font-bold text-slate-900 flex items-center gap-2">
                                     <span>{{ $rLabel }}</span>
                                     @if($isOwner)

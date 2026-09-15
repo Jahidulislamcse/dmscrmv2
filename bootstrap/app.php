@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'feature' => \App\Http\Middleware\FeatureControlMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

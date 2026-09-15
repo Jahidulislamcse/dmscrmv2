@@ -55,18 +55,9 @@ class User extends Authenticatable
             return true;
         }
 
-        $permissions = [
-            'sales' => ['dashboard', 'crm', 'meetings', 'requisitions', 'clients'],
-            'smm' => ['dashboard', 'clients', 'meetings'],
-            'designer' => ['dashboard', 'meetings'],
-            'motion' => ['dashboard', 'meetings'],
-            'video' => ['dashboard', 'meetings'],
-            'seo' => ['dashboard', 'meetings'],
-            'developer' => ['dashboard', 'meetings'],
-            'mediabuyer' => ['dashboard', 'meetings'],
-        ];
+        $allPermissions = \App\Models\RolePermission::getPermissions();
+        $allowedModules = $allPermissions[$this->role] ?? ['dashboard'];
 
-        $allowedModules = $permissions[$this->role] ?? ['dashboard'];
         return in_array($module, $allowedModules);
     }
 

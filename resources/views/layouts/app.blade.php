@@ -151,6 +151,7 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
+                    @if(auth()->user()->canAccess('tasks'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
                     <a href="{{ route('tasks.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('tasks.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
@@ -163,6 +164,7 @@
                         </span>
                         @endif
                     </a>
+                    @endif
 
                     <!-- AGENCY MANAGEMENT -->
                     @if(auth()->user()->canAccess('team') || auth()->user()->canAccess('services'))
@@ -184,20 +186,26 @@
                     @endif
 
                     <!-- FINANCIAL OVERSIGHT -->
-                    @if(auth()->user()->isOwner())
+                    @if(auth()->user()->canAccess('invoices') || auth()->user()->canAccess('expenses'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Financial Oversight</div>
 
+                    @if(auth()->user()->canAccess('invoices'))
                     <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('invoices.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-file-invoice-dollar w-4 text-center"></i>
                         <span>Invoices</span>
                     </a>
+                    @endif
 
+                    @if(auth()->user()->canAccess('expenses'))
                     <a href="{{ route('expenses.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('expenses.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-receipt w-4 text-center"></i>
                         <span>Expenses</span>
                     </a>
+                    @endif
+                    @endif
 
                     <!-- SYSTEM CONFIGURATION -->
+                    @if(auth()->user()->canAccess('settings'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">System Control</div>
 
                     <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('settings.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">

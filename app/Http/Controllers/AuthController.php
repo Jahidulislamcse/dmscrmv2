@@ -32,15 +32,6 @@ class AuthController extends Controller
             return back()->withErrors(['username' => 'Invalid credentials'])->withInput();
         }
 
-        // Development Phase Restriction: Only Super Admin (Owner) access permitted
-        if (!$user->isOwner()) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Access Restricted: Only Super Admin panel is active currently.'], 403);
-            }
-
-            return back()->withErrors(['username' => 'Access Restricted: Only Super Admin panel is active currently.'])->withInput();
-        }
-
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();

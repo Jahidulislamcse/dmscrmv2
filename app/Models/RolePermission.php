@@ -19,6 +19,7 @@ class RolePermission
             'team'         => 'Team & Feature Controls',
             'services'     => 'Services Catalog',
             'invoices'     => 'Invoices & Billing',
+            'reminders'    => 'Payment Reminders Hub',
             'expenses'     => 'Expenses Tracker',
             'settings'     => 'System Settings',
         ];
@@ -43,10 +44,10 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses', 'settings'],
-            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'expenses'],
-            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks'],
-            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'tasks'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'reminders', 'expenses'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'requisitions', 'clients', 'tasks', 'reminders'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'tasks', 'reminders'],
             'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
             'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
             'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],

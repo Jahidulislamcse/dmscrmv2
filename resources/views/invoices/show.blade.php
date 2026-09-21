@@ -11,6 +11,11 @@
             <i class="fa fa-arrow-left"></i> Back to Invoices Overview
         </a>
         <div class="flex items-center gap-2">
+            @if($invoice->balance > 0 && auth()->user()->canAccess('reminders'))
+            <a href="{{ route('reminders.index') }}" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5">
+                <i class="fa fa-bell"></i> Send Payment Reminder
+            </a>
+            @endif
             <button onclick="window.print()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
                 <i class="fa fa-print"></i> Print / Download PDF
             </button>
@@ -211,5 +216,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Payment Reminders Sent History (Hidden on Print) -->
+    @if($invoice->reminders->count() > 0)
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 space-y-4 shadow-sm print:hidden">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa fa-history text-amber-500"></i> Payment Reminders Sent for This Invoice ({{ $invoice->reminders->count() }})
+        </h3>
+
+        <div class="space-y-3">
+            @foreach($invoice->reminders as $rem)
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 font-bold text-slate-800">
+                        @if($rem->channel === 'whatsapp')
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300">WhatsApp</span>
+                        @elseif($rem->channel === 'email')
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 border border-blue-300">Email</span>
+                        @elseif($rem->channel === 'sms')
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-800 border border-purple-300">SMS</span>
+                        @else
+                            <span class="px-2 py-0.5 rounded text-[10px] bg-slate-200 text-slate-700">Manual</span>
+                        @endif
+                        <span>Dispatched by {{ $rem->sentBy->name ?? 'Staff' }}</span>
+                    </div>
+                    <span class="text-[11px] text-slate-400 font-mono">{{ $rem->sent_at ? $rem->sent_at->format('M d, Y h:i A') : $rem->created_at->format('M d, Y') }}</span>
+                </div>
+                <p class="text-slate-700 font-medium whitespace-pre-line leading-relaxed pl-2 border-l-2 border-amber-400">{{ $rem->message }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 </div>
 @endsection

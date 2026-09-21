@@ -201,13 +201,26 @@
                     @endif
 
                     <!-- FINANCIAL OVERSIGHT -->
-                    @if(auth()->user()->canAccess('invoices') || auth()->user()->canAccess('expenses'))
+                    @if(auth()->user()->canAccess('invoices') || auth()->user()->canAccess('reminders') || auth()->user()->canAccess('expenses'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Financial Oversight</div>
 
                     @if(auth()->user()->canAccess('invoices'))
                     <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('invoices.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-file-invoice-dollar w-4 text-center"></i>
                         <span>Invoices</span>
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('reminders'))
+                    <a href="{{ route('reminders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('reminders.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-bell w-4 text-center"></i>
+                        <span>Payment Reminders</span>
+                        @php $unpaidCount = \App\Models\Invoice::whereIn('status', ['unpaid', 'partial', 'overdue'])->where('balance', '>', 0)->count(); @endphp
+                        @if($unpaidCount > 0)
+                        <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            {{ $unpaidCount }}
+                        </span>
+                        @endif
                     </a>
                     @endif
 

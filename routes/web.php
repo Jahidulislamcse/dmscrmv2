@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     MeetingController,
     SettingsController,
     TaskController,
-    NotificationController
+    NotificationController,
+    ReminderController
 };
 
 // ── Guest / Auth Routes ──
@@ -87,9 +88,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/requisitions/{requisition}/reject', [RequisitionController::class, 'reject'])->name('requisitions.reject');
     });
 
-    // Financial Oversight (Invoices & Expenses)
+    // Financial Oversight (Invoices, Expenses & Payment Reminders)
     Route::middleware('feature:invoices')->group(function () {
         Route::resource('invoices', InvoiceController::class)->only(['index', 'create', 'store', 'show']);
+    });
+
+    Route::middleware('feature:reminders')->group(function () {
+        Route::get('/reminders', [ReminderController::class, 'index'])->name('reminders.index');
+        Route::post('/reminders/send', [ReminderController::class, 'send'])->name('reminders.send');
+        Route::post('/reminders/preview', [ReminderController::class, 'preview'])->name('reminders.preview');
+        Route::post('/reminders/templates', [ReminderController::class, 'storeTemplate'])->name('reminders.store-template');
+        Route::put('/reminders/templates/{template}', [ReminderController::class, 'updateTemplate'])->name('reminders.update-template');
+        Route::delete('/reminders/templates/{template}', [ReminderController::class, 'destroyTemplate'])->name('reminders.destroy-template');
     });
 
     Route::middleware('feature:expenses')->group(function () {

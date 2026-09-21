@@ -72,9 +72,16 @@
                             @endif
                         </td>
                         <td class="py-4 px-6 text-right">
-                            <a href="{{ route('invoices.show', $inv->id) }}" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-all" title="View Invoice">
-                                <i class="fa fa-eye"></i>
-                            </a>
+                            <div class="inline-flex items-center gap-2">
+                                @if($inv->balance > 0 && auth()->user()->canAccess('reminders'))
+                                <a href="{{ route('reminders.index') }}" class="px-2.5 py-1 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all inline-flex items-center gap-1" title="Send Payment Reminder">
+                                    <i class="fa fa-bell"></i> Reminder
+                                </a>
+                                @endif
+                                <a href="{{ route('invoices.show', $inv->id) }}" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-all" title="View Invoice">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @empty

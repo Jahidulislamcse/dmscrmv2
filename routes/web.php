@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     SettingsController,
     TaskController,
     NotificationController,
-    ReminderController
+    ReminderController,
+    FollowupController
 };
 
 // ── Guest / Auth Routes ──
@@ -86,6 +87,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/requisitions/{requisition}', [RequisitionController::class, 'show'])->name('requisitions.show');
         Route::post('/requisitions/{requisition}/approve', [RequisitionController::class, 'approve'])->name('requisitions.approve');
         Route::post('/requisitions/{requisition}/reject', [RequisitionController::class, 'reject'])->name('requisitions.reject');
+    });
+
+    // Follow-ups Management Hub
+    Route::middleware('feature:followups')->group(function () {
+        Route::get('/followups', [FollowupController::class, 'index'])->name('followups.index');
+        Route::post('/followups', [FollowupController::class, 'store'])->name('followups.store');
+        Route::put('/followups/{followup}', [FollowupController::class, 'update'])->name('followups.update');
+        Route::post('/followups/{followup}/complete', [FollowupController::class, 'complete'])->name('followups.complete');
+        Route::delete('/followups/{followup}', [FollowupController::class, 'destroy'])->name('followups.destroy');
     });
 
     // Financial Oversight (Invoices, Expenses & Payment Reminders)

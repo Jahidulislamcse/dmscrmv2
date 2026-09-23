@@ -97,7 +97,7 @@
                     </a>
 
                     <!-- SALES & PROSPECTS -->
-                    @if(auth()->user()->canAccess('crm') || auth()->user()->canAccess('meetings') || auth()->user()->canAccess('requisitions'))
+                    @if(auth()->user()->canAccess('crm') || auth()->user()->canAccess('meetings') || auth()->user()->canAccess('followups') || auth()->user()->canAccess('requisitions'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Sales & Prospects</div>
 
                     @if(auth()->user()->canAccess('crm'))
@@ -121,6 +121,19 @@
                         @if($upcomingCount > 0)
                         <span class="ml-auto bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                             {{ $upcomingCount }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('followups'))
+                    <a href="{{ route('followups.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('followups.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-clock-rotate-left w-4 text-center"></i>
+                        <span>Follow-ups</span>
+                        @php $dueFollowupCount = \App\Models\Followup::where('status', 'pending')->whereDate('scheduled_at', '<=', now()->toDateString())->count(); @endphp
+                        @if($dueFollowupCount > 0)
+                        <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            {{ $dueFollowupCount }}
                         </span>
                         @endif
                     </a>

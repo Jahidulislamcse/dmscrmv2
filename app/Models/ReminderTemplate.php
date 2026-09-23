@@ -8,6 +8,7 @@ class ReminderTemplate extends Model
 {
     protected $fillable = [
         'name',
+        'title',
         'type',
         'body',
         'days_before',

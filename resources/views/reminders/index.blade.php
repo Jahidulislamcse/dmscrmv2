@@ -13,7 +13,9 @@
     activeTemplate: {},
     selectedTemplateId: '',
     selectedChannel: 'whatsapp',
+    reminderTitle: 'Upcoming Invoice Due — {client_name}',
     messageBody: '',
+    parsedTitle: '',
     parsedMessage: '',
     clientPhone: '',
     clientEmail: '',
@@ -25,11 +27,13 @@
             body: JSON.stringify({
                 invoice_id: this.activeInvoice.id,
                 template_id: this.selectedTemplateId,
+                title: this.reminderTitle,
                 body: this.messageBody
             })
         })
         .then(res => res.json())
         .then(data => {
+            this.parsedTitle = data.parsed_title;
             this.parsedMessage = data.parsed_message;
             this.clientPhone = data.client_phone;
             this.clientEmail = data.client_email;
@@ -179,6 +183,7 @@
                                         @click="
                                             activeInvoice = @js($inv); 
                                             selectedTemplateId = '{{ $templates->first()->id ?? '' }}';
+                                            reminderTitle = '{{ addslashes($templates->first()->title ?? 'Upcoming Invoice Due — {client_name}') }}';
                                             messageBody = '{{ addslashes($templates->first()->body ?? '') }}';
                                             openSendModal = true;
                                             $nextTick(() => updatePreview());
@@ -262,14 +267,17 @@
                                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-300">Manual</span>
                                 @endif
                             </td>
-                            <td class="py-3.5 px-5 max-w-xs truncate text-slate-600" title="{{ $rem->message }}">
-                                {{ $rem->message }}
+                            <td class="py-3.5 px-5 max-w-xs text-slate-600">
+                                @if($rem->title)
+                                    <div class="font-bold text-slate-900 truncate text-xs mb-0.5" title="{{ $rem->title }}">{{ $rem->title }}</div>
+                                @endif
+                                <div class="truncate text-[11px] text-slate-500" title="{{ $rem->message }}">{{ $rem->message }}</div>
                             </td>
                             <td class="py-3.5 px-5 font-bold text-slate-800">
                                 {{ $rem->sentBy->name ?? 'Staff' }}
                             </td>
                             <td class="py-3.5 px-5 text-slate-500 font-mono">
-                                {{ $rem->sent_at ? $rem膜.sent_at->format('M d, Y h:i A') : $rem->created_at->format('M d, Y') }}
+                                {{ $rem->sent_at ? $rem->sent_at->format('M d, Y h:i A') : $rem->created_at->format('M d, Y') }}
                             </td>
                         </tr>
                         @empty
@@ -328,6 +336,11 @@
                             {{ strtoupper($tmpl->type) }}
                         </span>
                     </div>
+                    @if($tmpl->title)
+                    <div class="text-xs font-semibold text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-lg border border-amber-200/80 flex items-center gap-1.5">
+                        <span class="text-[10px] font-bold uppercase text-amber-600">Subject:</span> {{ $tmpl->title }}
+                    </div>
+                    @endif
                     <pre class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs font-sans whitespace-pre-wrap text-slate-700 leading-relaxed max-h-36 overflow-y-auto">{{ $tmpl->body }}</pre>
                 </div>
 
@@ -395,7 +408,11 @@
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Load Template</label>
                     <select name="template_id" x-model="selectedTemplateId" @change="
                         let t = @js($templates).find(x => x.id == selectedTemplateId);
-                        if(t) { messageBody = t.body; updatePreview(); }
+                        if(t) { 
+                            if(t.title) reminderTitle = t.title;
+                            messageBody = t.body; 
+                            updatePreview(); 
+                        }
                     " class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                         <option value="">— Select Template (Optional) —</option>
                         @foreach($templates as $tmpl)
@@ -404,17 +421,31 @@
                     </select>
                 </div>
 
+                <!-- Reminder Title / Email Subject Line -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Reminder Title / Email Subject Line (With Tags) *</label>
+                    <input type="text" name="title" x-model="reminderTitle" @input="updatePreview()" required
+                           placeholder="e.g. Upcoming Invoice Due — {client_name}"
+                           class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+
                 <!-- Editable Message Template Body -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Message Body (With Tags) *</label>
-                    <textarea name="message" x-model="messageBody" @input="updatePreview()" rows="3" required
+                    <textarea name="message" x-model="messageBody" @input="updatePreview()" rows="4" required
                               class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500"></textarea>
                 </div>
 
                 <!-- Live Message Preview Box -->
                 <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200/80 space-y-1 text-xs">
-                    <span class="block text-[10px] font-black text-amber-900 uppercase tracking-wider">Live Output Preview (What Client Receives):</span>
-                    <div class="text-slate-800 whitespace-pre-line leading-relaxed font-sans bg-white p-2.5 rounded-lg border border-amber-200" x-text="parsedMessage"></div>
+                    <span class="block text-[10px] font-black text-amber-900 uppercase tracking-wider mb-1">Live Output Preview (What Client Receives):</span>
+                    <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
+                        <div class="font-bold text-slate-900 text-xs pb-1.5 border-b border-slate-100 flex items-center gap-1.5" x-show="reminderTitle">
+                            <span class="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider">Subject:</span>
+                            <span x-text="parsedTitle"></span>
+                        </div>
+                        <div class="text-slate-800 whitespace-pre-line leading-relaxed font-sans" x-text="parsedMessage"></div>
+                    </div>
                 </div>
 
                 <!-- WhatsApp Option flag -->
@@ -448,6 +479,12 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Template Name *</label>
                     <input type="text" name="name" required placeholder="e.g. Overdue Final Demand Notice"
+                           class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Default Title / Subject Line (With Tags)</label>
+                    <input type="text" name="title" placeholder="e.g. Upcoming Invoice Due — {client_name}"
                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-amber-500">
                 </div>
 

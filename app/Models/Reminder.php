@@ -11,6 +11,7 @@ class Reminder extends Model
         'template_id',
         'sent_by',
         'channel',
+        'title',
         'message',
         'sent_at',
     ];

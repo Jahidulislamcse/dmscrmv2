@@ -242,6 +242,9 @@
                     </div>
                     <span class="text-[11px] text-slate-400 font-mono">{{ $rem->sent_at ? $rem->sent_at->format('M d, Y h:i A') : $rem->created_at->format('M d, Y') }}</span>
                 </div>
+                @if($rem->title)
+                    <div class="font-bold text-slate-900 text-xs mt-1 mb-0.5">{{ $rem->title }}</div>
+                @endif
                 <p class="text-slate-700 font-medium whitespace-pre-line leading-relaxed pl-2 border-l-2 border-amber-400">{{ $rem->message }}</p>
             </div>
             @endforeach

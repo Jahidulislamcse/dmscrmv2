@@ -117,21 +117,32 @@ class ReminderController extends Controller
         $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
             'template_id' => 'nullable|exists:reminder_templates,id',
+            'title' => 'nullable|string',
             'body' => 'nullable|string',
         ]);
 
         $invoice = Invoice::with('client')->findOrFail($request->invoice_id);
+        $title = $request->title;
         $body = $request->body;
 
-        if (empty($body) && $request->filled('template_id')) {
+        if ((empty($title) || empty($body)) && $request->filled('template_id')) {
             $template = ReminderTemplate::find($request->template_id);
-            $body = $template ? $template->body : '';
+            if ($template) {
+                if (empty($title)) $title = $template->title ?? "Upcoming Invoice Due — {client_name}";
+                if (empty($body)) $body = $template->body;
+            }
         }
 
-        $parsed = $this->parsePlaceholders($body ?? '', $invoice);
+        if (empty($title)) {
+            $title = "Upcoming Invoice Due — {client_name}";
+        }
+
+        $parsedTitle = $this->parsePlaceholders($title, $invoice);
+        $parsedBody = $this->parsePlaceholders($body ?? '', $invoice);
 
         return response()->json([
-            'parsed_message' => $parsed,
+            'parsed_title' => $parsedTitle,
+            'parsed_message' => $parsedBody,
             'client_phone' => $invoice->client->phone ?? '',
             'client_email' => $invoice->client->email ?? '',
         ]);
@@ -143,10 +154,22 @@ class ReminderController extends Controller
             'invoice_id' => 'required|exists:invoices,id',
             'template_id' => 'nullable|exists:reminder_templates,id',
             'channel' => 'required|in:whatsapp,email,sms,manual',
+            'title' => 'nullable|string|max:255',
             'message' => 'required|string',
         ]);
 
         $invoice = Invoice::with('client')->findOrFail($validated['invoice_id']);
+        
+        $titleRaw = $validated['title'] ?? null;
+        if (empty($titleRaw) && !empty($validated['template_id'])) {
+            $template = ReminderTemplate::find($validated['template_id']);
+            $titleRaw = $template->title ?? null;
+        }
+        if (empty($titleRaw)) {
+            $titleRaw = "Upcoming Invoice Due — {client_name}";
+        }
+
+        $title = $this->parsePlaceholders($titleRaw, $invoice);
         $message = $this->parsePlaceholders($validated['message'], $invoice);
 
         $reminder = Reminder::create([
@@ -154,6 +177,7 @@ class ReminderController extends Controller
             'template_id' => $validated['template_id'] ?? null,
             'sent_by' => Auth::id(),
             'channel' => $validated['channel'],
+            'title' => $title,
             'message' => $message,
             'sent_at' => now(),
         ]);
@@ -161,7 +185,7 @@ class ReminderController extends Controller
         // Trigger Notification
         Notification::create([
             'title' => 'Payment Reminder Sent',
-            'message' => "Payment reminder sent for Invoice {$invoice->invoice_number} ({$invoice->client->name}) via " . strtoupper($validated['channel']),
+            'message' => "Payment reminder '{$title}' sent for Invoice {$invoice->invoice_number} ({$invoice->client->name}) via " . strtoupper($validated['channel']),
             'user_id' => Auth::id(),
             'is_admin_only' => true,
         ]);
@@ -171,7 +195,6 @@ class ReminderController extends Controller
         if ($validated['channel'] === 'whatsapp') {
             $phone = preg_replace('/[^0-9]/', '', $invoice->client->phone ?? '');
             if (!empty($phone)) {
-                // Handle Bangladesh default country code if missing
                 if (strlen($phone) === 11 && str_starts_with($phone, '01')) {
                     $phone = '88' . $phone;
                 }
@@ -180,9 +203,9 @@ class ReminderController extends Controller
         } elseif ($validated['channel'] === 'email') {
             try {
                 if (!empty($invoice->client->email)) {
-                    Mail::raw($message, function ($mail) use ($invoice) {
+                    Mail::raw($message, function ($mail) use ($invoice, $title) {
                         $mail->to($invoice->client->email)
-                             ->subject("Payment Reminder: Invoice #{$invoice->invoice_number}");
+                             ->subject($title);
                     });
                 }
             } catch (\Throwable $e) {
@@ -203,13 +226,14 @@ class ReminderController extends Controller
             return redirect()->away($whatsappUrl);
         }
 
-        return redirect()->back()->with('success', "Payment reminder for Invoice {$invoice->invoice_number} logged successfully via " . strtoupper($validated['channel']) . "!");
+        return redirect()->back()->with('success', "Payment reminder '{$title}' for Invoice {$invoice->invoice_number} logged successfully via " . strtoupper($validated['channel']) . "!");
     }
 
     public function storeTemplate(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'type' => 'required|in:email,whatsapp,sms',
             'body' => 'required|string',
             'days_before' => 'nullable|integer',
@@ -218,6 +242,7 @@ class ReminderController extends Controller
 
         $template = ReminderTemplate::create([
             'name' => $validated['name'],
+            'title' => $validated['title'] ?? null,
             'type' => $validated['type'],
             'body' => $validated['body'],
             'days_before' => $validated['days_before'] ?? 0,
@@ -231,6 +256,7 @@ class ReminderController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'type' => 'required|in:email,whatsapp,sms',
             'body' => 'required|string',
             'days_before' => 'nullable|integer',
@@ -239,6 +265,7 @@ class ReminderController extends Controller
 
         $template->update([
             'name' => $validated['name'],
+            'title' => $validated['title'] ?? null,
             'type' => $validated['type'],
             'body' => $validated['body'],
             'days_before' => $validated['days_before'] ?? 0,

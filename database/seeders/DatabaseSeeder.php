@@ -78,9 +78,9 @@ class DatabaseSeeder extends Seeder
 
         // ── Reminder Templates ──
         ReminderTemplate::create(['name'=>'Friendly Reminder', 'type'=>'whatsapp', 'days_before'=>7,
-            'body'=>"Assalamu Alaikum {{client_name}},\n\nThis is a friendly reminder that invoice {{invoice_number}} for ৳{{amount}} is due on {{due_date}}.\n\nPlease arrange payment at your earliest convenience.\n\nThank you!\n{{company_name}}"]);
+            'body'=>"Assalamu Alaikum {client_name},\n\nThis is a friendly reminder that invoice {invoice_number} for {balance_due} is due on {due_date}.\n\nPlease arrange payment at your earliest convenience.\n\nThank you!\n{company_name}"]);
         ReminderTemplate::create(['name'=>'Urgent Reminder', 'type'=>'whatsapp', 'days_before'=>1,
-            'body'=>"Dear {{client_name}},\n\nYour invoice {{invoice_number}} of ৳{{amount}} was due on {{due_date}}.\n\nKindly clear the payment today to avoid service interruption.\n\n{{company_name}}"]);
+            'body'=>"Dear {client_name},\n\nYour invoice {invoice_number} of {balance_due} was due on {due_date}.\n\nKindly clear the payment today to avoid service interruption.\n\n{company_name}"]);
 
         // ── Default Custom Statuses (global) ──
         $defaultStatuses = [

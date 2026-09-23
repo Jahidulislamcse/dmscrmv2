@@ -8,15 +8,36 @@ use App\Models\{Reminder, ReminderTemplate, Invoice, Client, Notification};
 
 class ReminderController extends Controller
 {
+    private function cleanTemplateBodies()
+    {
+        try {
+            ReminderTemplate::all()->each(function ($tmpl) {
+                if (str_contains($tmpl->body, '{{')) {
+                    $cleaned = str_replace(
+                        ['{{client_name}}', '{{company_name}}', '{{invoice_number}}', '{{amount}}', '{{due_date}}', '{{total_amount}}', '{{balance_due}}'],
+                        ['{client_name}', '{company_name}', '{invoice_number}', '{balance_due}', '{due_date}', '{total_amount}', '{balance_due}'],
+                        $tmpl->body
+                    );
+                    $tmpl->update(['body' => $cleaned]);
+                }
+            });
+        } catch (\Throwable $e) {
+            // Silence if DB table missing during early setup
+        }
+    }
+
     private function seedDefaultTemplatesIfNeeded()
     {
+        $this->cleanTemplateBodies();
+
         if (ReminderTemplate::count() === 0) {
             ReminderTemplate::create([
                 'name' => 'Friendly Payment Reminder',
                 'type' => 'whatsapp',
                 'days_before' => 3,
                 'active' => true,
-                'body' => "Dear {client_name},\n\nThis is a friendly reminder from {agency_name} regarding Invoice #{invoice_number} for {total_amount}.\nDue Date: {due_date}\nBalance Due: {balance_due}\n\nView & Pay Invoice: {payment_link}\n\nThank you for working with us!",
+                'title' => 'Upcoming Invoice Due — {client_name}',
+                'body' => "Assalamu Alaikum {client_name},\n\nThis is a friendly reminder from {agency_name} regarding Invoice #{invoice_number} for {balance_due}.\nDue Date: {due_date}\n\nView & Pay Invoice: {payment_link}\n\nThank you for working with us!",
             ]);
 
             ReminderTemplate::create([
@@ -24,6 +45,7 @@ class ReminderController extends Controller
                 'type' => 'email',
                 'days_before' => 0,
                 'active' => true,
+                'title' => 'URGENT PAYMENT NOTICE — Invoice #{invoice_number}',
                 'body' => "URGENT PAYMENT NOTICE\n\nDear {client_name} ({company_name}),\n\nYour invoice #{invoice_number} was due on {due_date}. The balance of {balance_due} is now OVERDUE.\n\nPlease arrange payment immediately using this link: {payment_link}\n\nIf you have already paid, please ignore this notice.\n\nRegards,\n{agency_name} Finance Team",
             ]);
 
@@ -32,6 +54,7 @@ class ReminderController extends Controller
                 'type' => 'sms',
                 'days_before' => 1,
                 'active' => true,
+                'title' => 'Payment Reminder: {invoice_number}',
                 'body' => "Hello {client_name}, please clear the remaining balance of {balance_due} for Invoice #{invoice_number} ({agency_name}). View: {payment_link}",
             ]);
         }
@@ -93,23 +116,54 @@ class ReminderController extends Controller
         $invoiceNumber = $invoice->invoice_number;
         $dueDate = $invoice->due_date ? $invoice->due_date->format('M d, Y') : 'Upon Receipt';
         $issuedDate = $invoice->issued_date ? $invoice->issued_date->format('M d, Y') : 'Today';
+        
+        $numericAmount = number_format($invoice->balance > 0 ? $invoice->balance : $invoice->total, 2);
         $totalAmount = $currency . number_format($invoice->total, 2);
-        $balanceDue = $currency . number_format($invoice->balance, 2);
+        $balanceDue = $currency . $numericAmount;
         $paymentLink = route('invoices.show', $invoice->id);
 
         $replacements = [
+            // Double curly braces tags (e.g. {{client_name}})
+            '{{client_name}}' => $clientName,
+            '{{client}}' => $clientName,
+            '{{company_name}}' => $companyName,
+            '{{invoice_number}}' => $invoiceNumber,
+            '{{invoice_no}}' => $invoiceNumber,
+            '{{due_date}}' => $dueDate,
+            '{{issued_date}}' => $issuedDate,
+            '৳{{amount}}' => $balanceDue,
+            '৳{{balance_due}}' => $balanceDue,
+            '৳{{total_amount}}' => $totalAmount,
+            '{{amount}}' => $balanceDue,
+            '{{total_amount}}' => $totalAmount,
+            '{{balance_due}}' => $balanceDue,
+            '{{payment_link}}' => $paymentLink,
+            '{{agency_name}}' => $agencyName,
+
+            // Single curly braces tags (e.g. {client_name})
             '{client_name}' => $clientName,
+            '{client}' => $clientName,
             '{company_name}' => $companyName,
             '{invoice_number}' => $invoiceNumber,
+            '{invoice_no}' => $invoiceNumber,
             '{due_date}' => $dueDate,
             '{issued_date}' => $issuedDate,
+            '৳{amount}' => $balanceDue,
+            '৳{balance_due}' => $balanceDue,
+            '৳{total_amount}' => $totalAmount,
+            '{amount}' => $balanceDue,
             '{total_amount}' => $totalAmount,
             '{balance_due}' => $balanceDue,
             '{payment_link}' => $paymentLink,
             '{agency_name}' => $agencyName,
         ];
 
-        return str_replace(array_keys($replacements), array_values($replacements), $body);
+        $parsed = str_replace(array_keys($replacements), array_values($replacements), $body);
+
+        // Sanitize any remaining double currency symbols (e.g. ৳৳8,500.00 -> ৳8,500.00)
+        $parsed = str_replace($currency . $currency, $currency, $parsed);
+
+        return $parsed;
     }
 
     public function preview(Request $request)

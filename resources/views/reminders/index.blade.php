@@ -183,8 +183,8 @@
                                         @click="
                                             activeInvoice = @js($inv); 
                                             selectedTemplateId = '{{ $templates->first()->id ?? '' }}';
-                                            reminderTitle = '{{ addslashes($templates->first()->title ?? 'Upcoming Invoice Due — {client_name}') }}';
-                                            messageBody = '{{ addslashes($templates->first()->body ?? '') }}';
+                                            reminderTitle = @js($templates->first()->title ?? 'Upcoming Invoice Due — {client_name}');
+                                            messageBody = @js($templates->first()->body ?? '');
                                             openSendModal = true;
                                             $nextTick(() => updatePreview());
                                         "

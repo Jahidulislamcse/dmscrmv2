@@ -116,7 +116,7 @@ class ReminderController extends Controller
     {
         $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
-            'template_id' => 'nullable|exists:reminder_templates,id',
+            'template_id' => 'nullable',
             'title' => 'nullable|string',
             'body' => 'nullable|string',
         ]);
@@ -152,7 +152,7 @@ class ReminderController extends Controller
     {
         $validated = $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
-            'template_id' => 'nullable|exists:reminder_templates,id',
+            'template_id' => 'nullable',
             'channel' => 'required|in:whatsapp,email,sms,manual',
             'title' => 'nullable|string|max:255',
             'message' => 'required|string',
@@ -160,9 +160,10 @@ class ReminderController extends Controller
 
         $invoice = Invoice::with('client')->findOrFail($validated['invoice_id']);
         
+        $templateId = !empty($validated['template_id']) ? $validated['template_id'] : null;
         $titleRaw = $validated['title'] ?? null;
-        if (empty($titleRaw) && !empty($validated['template_id'])) {
-            $template = ReminderTemplate::find($validated['template_id']);
+        if (empty($titleRaw) && !empty($templateId)) {
+            $template = ReminderTemplate::find($templateId);
             $titleRaw = $template->title ?? null;
         }
         if (empty($titleRaw)) {
@@ -174,7 +175,7 @@ class ReminderController extends Controller
 
         $reminder = Reminder::create([
             'invoice_id' => $invoice->id,
-            'template_id' => $validated['template_id'] ?? null,
+            'template_id' => $templateId,
             'sent_by' => Auth::id(),
             'channel' => $validated['channel'],
             'title' => $title,
@@ -184,9 +185,10 @@ class ReminderController extends Controller
 
         // Trigger Notification
         Notification::create([
-            'title' => 'Payment Reminder Sent',
-            'message' => "Payment reminder '{$title}' sent for Invoice {$invoice->invoice_number} ({$invoice->client->name}) via " . strtoupper($validated['channel']),
             'user_id' => Auth::id(),
+            'icon' => 'bell',
+            'bg_color' => '#fef3c7',
+            'message' => "Payment reminder '{$title}' sent for Invoice {$invoice->invoice_number} ({$invoice->client->name}) via " . strtoupper($validated['channel']),
             'is_admin_only' => true,
         ]);
 

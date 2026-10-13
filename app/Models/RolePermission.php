@@ -17,6 +17,7 @@ class RolePermission
             'clients'      => 'Clients Management',
             'tasks'        => 'Task & Deliverables Board',
             'calendar'     => 'Content Ops & Calendar',
+            'campaigns'    => 'Campaign Management (Meta/Google)',
             'team'         => 'Team & Feature Controls',
             'services'     => 'Services Catalog',
             'invoices'     => 'Invoices & Billing',
@@ -46,15 +47,15 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
-            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'team', 'services', 'invoices', 'reminders', 'expenses'],
-            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'reminders'],
-            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'reminders'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'reminders'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'campaigns', 'reminders'],
             'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
-            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'campaigns'],
             'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
         ];
     }

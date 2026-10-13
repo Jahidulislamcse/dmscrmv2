@@ -17,7 +17,8 @@ use App\Http\Controllers\{
     NotificationController,
     ReminderController,
     FollowupController,
-    ContentPostController
+    ContentPostController,
+    CampaignController
 };
 
 // ── Guest / Auth Routes ──
@@ -96,6 +97,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/calendar/{post}', [ContentPostController::class, 'update'])->name('calendar.update');
         Route::post('/calendar/{post}/stage', [ContentPostController::class, 'updateStage'])->name('calendar.update-stage');
         Route::delete('/calendar/{post}', [ContentPostController::class, 'destroy'])->name('calendar.destroy');
+    });
+
+    // Performance Marketing & Ad Campaigns
+    Route::middleware('feature:campaigns')->group(function () {
+        Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+        Route::post('/campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
+        Route::put('/campaigns/{campaign}', [CampaignController::class, 'update'])->name('campaigns.update');
+        Route::post('/campaigns/{campaign}/metrics', [CampaignController::class, 'updateMetrics'])->name('campaigns.metrics');
+        Route::post('/campaigns/{campaign}/status', [CampaignController::class, 'updateStatus'])->name('campaigns.status');
+        Route::delete('/campaigns/{campaign}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');
     });
 
     // Requisition Approval Hub

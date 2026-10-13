@@ -25,6 +25,9 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <a href="{{ route('campaigns.index', ['client_id' => $client->id]) }}" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
+                <i class="fa fa-bullseye"></i> Ad Campaigns
+            </a>
             <a href="{{ route('calendar.index', ['client_id' => $client->id]) }}" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
                 <i class="fa fa-calendar-days"></i> Content Calendar
             </a>

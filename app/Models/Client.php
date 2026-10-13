@@ -72,6 +72,11 @@ class Client extends Model
         return $this->hasMany(Meeting::class);
     }
 
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
+
     public function getTotalMonthlyValueAttribute()
     {
         return $this->clientServices->sum(fn($cs) => $cs->price * $cs->qty);

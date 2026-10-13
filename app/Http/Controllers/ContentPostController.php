@@ -81,7 +81,7 @@ class ContentPostController extends Controller
         }
 
         $clients = Client::orderBy('name')->get();
-        $teamMembers = User::where('is_active', true)->orderBy('name')->get();
+        $teamMembers = User::where('active', true)->orderBy('name')->get();
 
         return view('calendar.index', compact(
             'posts',

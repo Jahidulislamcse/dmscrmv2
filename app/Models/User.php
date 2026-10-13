@@ -54,6 +54,16 @@ class User extends Authenticatable
         return in_array($this->role, ['designer', 'motion', 'video', 'seo', 'developer', 'mediabuyer']);
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return (bool) $this->active;
+    }
+
     public function canAccess(string $module): bool
     {
         if ($this->isOwner()) {

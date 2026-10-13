@@ -24,6 +24,7 @@ class RolePermission
             'reminders'    => 'Payment Reminders Hub',
             'followups'    => 'Follow-ups Management',
             'expenses'     => 'Expenses Tracker',
+            'reports'      => 'Monthly Client Reports',
             'settings'     => 'System Settings',
         ];
     }
@@ -47,15 +48,15 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
-            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses'],
-            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'reminders'],
-            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'campaigns', 'reminders'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports'],
             'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
             'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
-            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'campaigns'],
+            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'campaigns', 'reports'],
             'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
         ];
     }

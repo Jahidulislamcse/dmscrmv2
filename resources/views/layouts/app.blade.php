@@ -154,13 +154,22 @@
                     @endif
 
                     <!-- CLIENT OPERATIONS -->
-                    @if(auth()->user()->canAccess('clients'))
+                    @if(auth()->user()->canAccess('clients') || auth()->user()->canAccess('reports'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Client Operations</div>
 
+                    @if(auth()->user()->canAccess('clients'))
                     <a href="{{ route('clients.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('clients.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-users w-4 text-center"></i>
                         <span>Clients Management</span>
                     </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('reports'))
+                    <a href="{{ route('reports.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('reports.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-chart-pie w-4 text-center"></i>
+                        <span>Monthly Reports</span>
+                    </a>
+                    @endif
                     @endif
 
                     <!-- WORK & DELIVERABLES -->

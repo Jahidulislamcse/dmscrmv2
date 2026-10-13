@@ -19,7 +19,8 @@ use App\Http\Controllers\{
     FollowupController,
     ContentPostController,
     CampaignController,
-    EmployeeKpiController
+    EmployeeKpiController,
+    ReportController
 };
 
 // ── Guest / Auth Routes ──
@@ -148,6 +149,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware('feature:expenses')->group(function () {
         Route::resource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy']);
+    });
+
+    // Monthly Client Performance Reports (REQ-REP-01)
+    Route::middleware('feature:reports')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/client/{client}', [ReportController::class, 'clientReport'])->name('reports.client');
+        Route::get('/reports/client/{client}/pdf', [ReportController::class, 'clientPdf'])->name('reports.client.pdf');
     });
 
     // System & Agency Settings

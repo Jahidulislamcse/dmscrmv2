@@ -25,6 +25,11 @@
         </div>
 
         <div class="flex items-center gap-3">
+            @if(auth()->user()->canAccess('reports'))
+            <a href="{{ route('reports.client', $client->id) }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
+                <i class="fa fa-chart-pie"></i> Monthly Report
+            </a>
+            @endif
             <a href="{{ route('campaigns.index', ['client_id' => $client->id]) }}" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
                 <i class="fa fa-bullseye"></i> Ad Campaigns
             </a>

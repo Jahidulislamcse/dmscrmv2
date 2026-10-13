@@ -18,7 +18,8 @@ use App\Http\Controllers\{
     ReminderController,
     FollowupController,
     ContentPostController,
-    CampaignController
+    CampaignController,
+    EmployeeKpiController
 };
 
 // ── Guest / Auth Routes ──
@@ -64,8 +65,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('clients', ClientController::class);
     });
 
-    // Team & Role Feature Control Management
+    // Team & Role Feature Control Management & Employee Info / KPI
     Route::middleware('feature:team')->group(function () {
+        Route::get('/team/kpi', [EmployeeKpiController::class, 'index'])->name('team.kpi');
+        Route::get('/team/{user}/kpi', [EmployeeKpiController::class, 'show'])->name('team.kpi.show');
+        Route::post('/team/attendance', [EmployeeKpiController::class, 'storeAttendance'])->name('team.attendance.store');
+        Route::post('/team/salary', [EmployeeKpiController::class, 'storeSalary'])->name('team.salary.store');
+        Route::put('/team/{user}/employee-info', [EmployeeKpiController::class, 'updateEmployeeInfo'])->name('team.employee-info.update');
         Route::post('/team/permissions', [UserController::class, 'updatePermissions'])->name('team.update-permissions');
         Route::resource('team', UserController::class)->parameters(['team' => 'user']);
     });

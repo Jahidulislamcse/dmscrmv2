@@ -26,6 +26,10 @@
                 <i class="fa fa-shield-halved text-amber-500"></i>
                 <span>Role Feature Controls</span>
             </button>
+            <a href="{{ route('team.kpi') }}" class="px-4 py-2 rounded-lg text-xs flex items-center gap-2 transition-all text-slate-600 hover:text-slate-900 font-semibold hover:bg-white/60">
+                <i class="fa fa-chart-line text-emerald-500"></i>
+                <span>Employee KPI & HR</span>
+            </a>
         </div>
     </div>
 
@@ -86,8 +90,11 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('team.edit', $user->id) }}" class="px-3 py-1.5 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all flex items-center gap-1" title="Edit Member">
+                <div class="flex items-center gap-1.5">
+                    <a href="{{ route('team.kpi.show', $user->id) }}" class="px-2.5 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg transition-all flex items-center gap-1" title="Employee KPI Dossier">
+                        <i class="fa fa-chart-pie text-emerald-600"></i> KPI
+                    </a>
+                    <a href="{{ route('team.edit', $user->id) }}" class="px-2.5 py-1.5 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all flex items-center gap-1" title="Edit Member">
                         <i class="fa fa-edit"></i> Edit
                     </a>
                 </div>

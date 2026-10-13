@@ -34,7 +34,9 @@ use App\Models\{
     Worklog,
     Notification,
     MyWorkItem,
-    Followup
+    Followup,
+    Attendance,
+    EmployeeSalary
 };
 
 class DatabaseSeeder extends Seeder
@@ -76,6 +78,8 @@ class DatabaseSeeder extends Seeder
             'worklogs',
             'notifications',
             'my_work_items',
+            'attendances',
+            'employee_salaries',
         ];
 
         foreach ($tables as $table) {
@@ -87,103 +91,169 @@ class DatabaseSeeder extends Seeder
         // ── 1. Users (All 10 Tiers + Karim) ──
         $usersData = [
             [
-                'name'     => 'Mehedi Hasan',
-                'username' => 'admin',
-                'email'    => 'admin@dmsagency.com',
-                'password' => 'admin123',
-                'role'     => 'owner',
-                'color'    => '#f59e0b',
-                'active'   => true,
+                'name'              => 'Mehedi Hasan',
+                'username'          => 'admin',
+                'email'             => 'admin@dmsagency.com',
+                'phone'             => '+880 1711-100200',
+                'password'          => 'admin123',
+                'role'              => 'owner',
+                'designation'       => 'CEO & Agency Managing Director',
+                'department'        => 'Executive Leadership',
+                'joining_date'      => '2024-01-01',
+                'base_salary'       => 120000.00,
+                'emergency_contact' => 'Dr. Hasan (+880 1711-998811)',
+                'color'             => '#f59e0b',
+                'active'            => true,
             ],
             [
-                'name'     => 'Farhan Manager',
-                'username' => 'manager',
-                'email'    => 'manager@dmsagency.com',
-                'password' => 'manager123',
-                'role'     => 'admin',
-                'color'    => '#6366f1',
-                'active'   => true,
+                'name'              => 'Farhan Manager',
+                'username'          => 'manager',
+                'email'             => 'manager@dmsagency.com',
+                'phone'             => '+880 1712-200300',
+                'password'          => 'manager123',
+                'role'              => 'admin',
+                'designation'       => 'Chief Operating Officer (COO)',
+                'department'        => 'Agency Operations & Finance',
+                'joining_date'      => '2024-03-01',
+                'base_salary'       => 85000.00,
+                'emergency_contact' => 'Fahim Manager (+880 1712-887766)',
+                'color'             => '#6366f1',
+                'active'            => true,
             ],
             [
-                'name'     => 'Rahim Uddin',
-                'username' => 'rahim',
-                'email'    => 'rahim@dmsagency.com',
-                'password' => 'rahim123',
-                'role'     => 'sales',
-                'color'    => '#3b82f6',
-                'active'   => true,
+                'name'              => 'Rahim Uddin',
+                'username'          => 'rahim',
+                'email'             => 'rahim@dmsagency.com',
+                'phone'             => '+880 1713-300400',
+                'password'          => 'rahim123',
+                'role'              => 'sales',
+                'designation'       => 'Senior Business Development Lead',
+                'department'        => 'Sales & Partnerships',
+                'joining_date'      => '2024-06-15',
+                'base_salary'       => 60000.00,
+                'emergency_contact' => 'Mrs. Rahim (+880 1713-776655)',
+                'color'             => '#3b82f6',
+                'active'            => true,
             ],
             [
-                'name'     => 'Karim Sheikh',
-                'username' => 'karim',
-                'email'    => 'karim@dmsagency.com',
-                'password' => 'karim123',
-                'role'     => 'sales',
-                'color'    => '#8b5cf6',
-                'active'   => true,
+                'name'              => 'Karim Sheikh',
+                'username'          => 'karim',
+                'email'             => 'karim@dmsagency.com',
+                'phone'             => '+880 1714-400500',
+                'password'          => 'karim123',
+                'role'              => 'sales',
+                'designation'       => 'B2B Enterprise Account Executive',
+                'department'        => 'Sales & Partnerships',
+                'joining_date'      => '2024-08-01',
+                'base_salary'       => 55000.00,
+                'emergency_contact' => 'Abul Sheikh (+880 1714-665544)',
+                'color'             => '#8b5cf6',
+                'active'            => true,
             ],
             [
-                'name'     => 'Sara Begum',
-                'username' => 'sara',
-                'email'    => 'sara@dmsagency.com',
-                'password' => 'sara123',
-                'role'     => 'smm',
-                'color'    => '#f97316',
-                'active'   => true,
+                'name'              => 'Sara Begum',
+                'username'          => 'sara',
+                'email'             => 'sara@dmsagency.com',
+                'phone'             => '+880 1715-500600',
+                'password'          => 'sara123',
+                'role'              => 'smm',
+                'designation'       => 'Head of Social Media & Content Strategy',
+                'department'        => 'SMM & Editorial Operations',
+                'joining_date'      => '2024-04-10',
+                'base_salary'       => 52000.00,
+                'emergency_contact' => 'Salma Begum (+880 1715-554433)',
+                'color'             => '#f97316',
+                'active'            => true,
             ],
             [
-                'name'     => 'Rafi Ahmed',
-                'username' => 'rafi',
-                'email'    => 'rafi@dmsagency.com',
-                'password' => 'rafi123',
-                'role'     => 'designer',
-                'color'    => '#ec4899',
-                'active'   => true,
+                'name'              => 'Rafi Ahmed',
+                'username'          => 'rafi',
+                'email'             => 'rafi@dmsagency.com',
+                'phone'             => '+880 1716-600700',
+                'password'          => 'rafi123',
+                'role'              => 'designer',
+                'designation'       => 'Lead Visual & Brand Identity Designer',
+                'department'        => 'Creative Production',
+                'joining_date'      => '2024-05-01',
+                'base_salary'       => 48000.00,
+                'emergency_contact' => 'Rina Ahmed (+880 1716-443322)',
+                'color'             => '#ec4899',
+                'active'            => true,
             ],
             [
-                'name'     => 'Nafi Islam',
-                'username' => 'nafi',
-                'email'    => 'nafi@dmsagency.com',
-                'password' => 'nafi123',
-                'role'     => 'motion',
-                'color'    => '#14b8a6',
-                'active'   => true,
+                'name'              => 'Nafi Islam',
+                'username'          => 'nafi',
+                'email'             => 'nafi@dmsagency.com',
+                'phone'             => '+880 1717-700800',
+                'password'          => 'nafi123',
+                'role'              => 'motion',
+                'designation'       => 'Senior 3D & Kinetic Motion Artist',
+                'department'        => 'Motion & VFX',
+                'joining_date'      => '2024-07-20',
+                'base_salary'       => 50000.00,
+                'emergency_contact' => 'Nur Islam (+880 1717-332211)',
+                'color'             => '#14b8a6',
+                'active'            => true,
             ],
             [
-                'name'     => 'Tanvir Editor',
-                'username' => 'tanvir',
-                'email'    => 'tanvir@dmsagency.com',
-                'password' => 'tanvir123',
-                'role'     => 'video',
-                'color'    => '#f43f5e',
-                'active'   => true,
+                'name'              => 'Tanvir Editor',
+                'username'          => 'tanvir',
+                'email'             => 'tanvir@dmsagency.com',
+                'phone'             => '+880 1718-800900',
+                'password'          => 'tanvir123',
+                'role'              => 'video',
+                'designation'       => 'Lead Video Editor & Colorist',
+                'department'        => 'Video Production',
+                'joining_date'      => '2024-09-01',
+                'base_salary'       => 45000.00,
+                'emergency_contact' => 'Tareq Editor (+880 1718-221100)',
+                'color'             => '#f43f5e',
+                'active'            => true,
             ],
             [
-                'name'     => 'Tariq Hassan',
-                'username' => 'tariq',
-                'email'    => 'tariq@dmsagency.com',
-                'password' => 'tariq123',
-                'role'     => 'seo',
-                'color'    => '#10b981',
-                'active'   => true,
+                'name'              => 'Tariq Hassan',
+                'username'          => 'tariq',
+                'email'             => 'tariq@dmsagency.com',
+                'phone'             => '+880 1719-900100',
+                'password'          => 'tariq123',
+                'role'              => 'seo',
+                'designation'       => 'Lead Technical SEO & Full-Stack Engineer',
+                'department'        => 'Engineering & Organic Growth',
+                'joining_date'      => '2024-02-15',
+                'base_salary'       => 65000.00,
+                'emergency_contact' => 'Nusrat Hassan (+880 1719-110099)',
+                'color'             => '#10b981',
+                'active'            => true,
             ],
             [
-                'name'     => 'Sabbir Ads',
-                'username' => 'sabbir',
-                'email'    => 'sabbir@dmsagency.com',
-                'password' => 'sabbir123',
-                'role'     => 'mediabuyer',
-                'color'    => '#0ea5e9',
-                'active'   => true,
+                'name'              => 'Sabbir Ads',
+                'username'          => 'sabbir',
+                'email'             => 'sabbir@dmsagency.com',
+                'phone'             => '+880 1720-001122',
+                'password'          => 'sabbir123',
+                'role'              => 'mediabuyer',
+                'designation'       => 'Senior Performance Marketer & Media Buyer',
+                'department'        => 'Paid Performance Media',
+                'joining_date'      => '2024-05-15',
+                'base_salary'       => 58000.00,
+                'emergency_contact' => 'Saif Ads (+880 1720-998877)',
+                'color'             => '#0ea5e9',
+                'active'            => true,
             ],
             [
-                'name'     => 'Joy Team',
-                'username' => 'joy',
-                'email'    => 'joy@dmsagency.com',
-                'password' => 'joy123',
-                'role'     => 'employee',
-                'color'    => '#64748b',
-                'active'   => true,
+                'name'              => 'Joy Team',
+                'username'          => 'joy',
+                'email'             => 'joy@dmsagency.com',
+                'phone'             => '+880 1721-112233',
+                'password'          => 'joy123',
+                'role'              => 'employee',
+                'designation'       => 'Operations & Account Support Associate',
+                'department'        => 'General Operations',
+                'joining_date'      => '2025-01-10',
+                'base_salary'       => 32000.00,
+                'emergency_contact' => 'Fatema (+880 1721-887766)',
+                'color'             => '#64748b',
+                'active'            => true,
             ],
         ];
 
@@ -1975,6 +2045,85 @@ class DatabaseSeeder extends Seeder
             'due_date'  => now()->subDays(1)->toDateString(),
             'completed_at' => now()->subDays(1),
         ]);
+
+        // ── 24. Attendances (Daily Punctuality & Absence Records) ──
+        $attendanceDays = [
+            '2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04',
+            '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09',
+            '2026-10-10', '2026-10-11', '2026-10-12', '2026-10-13'
+        ];
+
+        foreach ($u as $username => $userObj) {
+            foreach ($attendanceDays as $idx => $dateStr) {
+                $status = 'present';
+                $checkIn = '09:30:00';
+                $checkOut = '18:30:00';
+                $notes = null;
+
+                // Occasional late or leave records
+                if ($username === 'rafi' && $idx === 2) {
+                    $status = 'late';
+                    $checkIn = '10:15:00';
+                    $notes = 'Traffic congestion at Banani bridge';
+                } elseif ($username === 'tanvir' && $idx === 4) {
+                    $status = 'leave';
+                    $checkIn = null;
+                    $checkOut = null;
+                    $notes = 'Approved personal leave day';
+                } elseif ($username === 'karim' && $idx === 6) {
+                    $status = 'absent';
+                    $checkIn = null;
+                    $checkOut = null;
+                    $notes = 'Unscheduled absence';
+                } elseif ($username === 'joy' && $idx === 7) {
+                    $status = 'half_day';
+                    $checkIn = '09:30:00';
+                    $checkOut = '14:00:00';
+                    $notes = 'Half day for medical consultation';
+                }
+
+                Attendance::create([
+                    'user_id'   => $userObj->id,
+                    'date'      => $dateStr,
+                    'status'    => $status,
+                    'check_in'  => $checkIn,
+                    'check_out' => $checkOut,
+                    'notes'     => $notes,
+                ]);
+            }
+        }
+
+        // ── 25. Employee Salaries & Bonuses (Payroll & KPI Rewards) ──
+        $payrollData = [
+            'admin'   => ['base' => 120000, 'bonus' => 20000, 'deductions' => 0, 'status' => 'paid',    'method' => 'bank_transfer', 'notes' => 'Executive founder drawing'],
+            'manager' => ['base' => 85000,  'bonus' => 15000, 'deductions' => 0, 'status' => 'paid',    'method' => 'bank_transfer', 'notes' => 'Q4 agency operations bonus'],
+            'rahim'   => ['base' => 60000,  'bonus' => 18000, 'deductions' => 0, 'status' => 'paid',    'method' => 'bank_transfer', 'notes' => 'Commission on Shwapno closed sale'],
+            'sara'    => ['base' => 52000,  'bonus' => 10000, 'deductions' => 0, 'status' => 'paid',    'method' => 'bank_transfer', 'notes' => 'Aarong festive sprint incentive'],
+            'rafi'    => ['base' => 48000,  'bonus' => 8000,  'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => 'Creative quality milestone'],
+            'nafi'    => ['base' => 50000,  'bonus' => 7500,  'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => 'Apex 3D animation milestone'],
+            'tanvir'  => ['base' => 45000,  'bonus' => 6000,  'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => '4K Reel cuts delivery bonus'],
+            'tariq'   => ['base' => 65000,  'bonus' => 10000, 'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => 'Core Web Vitals speed reward'],
+            'sabbir'  => ['base' => 58000,  'bonus' => 12000, 'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => '4.6x ROAS performance incentive'],
+            'joy'     => ['base' => 32000,  'bonus' => 3000,  'deductions' => 0, 'status' => 'pending', 'method' => 'bkash',         'notes' => 'Competitor intelligence reward'],
+            'karim'   => ['base' => 55000,  'bonus' => 8000,  'deductions' => 0, 'status' => 'pending', 'method' => 'bank_transfer', 'notes' => 'BrainStation deal renewal bonus'],
+        ];
+
+        foreach ($payrollData as $username => $p) {
+            $userObj = $u[$username];
+            $net = $p['base'] + $p['bonus'] - $p['deductions'];
+            EmployeeSalary::create([
+                'user_id'        => $userObj->id,
+                'month'          => '2026-10',
+                'base_salary'    => $p['base'],
+                'bonus'          => $p['bonus'],
+                'deductions'     => $p['deductions'],
+                'net_salary'     => $net,
+                'status'         => $p['status'],
+                'paid_at'        => $p['status'] === 'paid' ? now()->subDays(3)->toDateString() : null,
+                'payment_method' => $p['method'],
+                'notes'          => $p['notes'],
+            ]);
+        }
 
         echo "\n🎉 SUCCESS: All DMS CRM tables seeded with agency-grade realistic data!\n";
         echo "=========================================================================\n";

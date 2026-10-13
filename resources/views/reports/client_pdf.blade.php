@@ -1,3 +1,7 @@
+@php
+    $fontFile = public_path('fonts/kalpurush.ttf');
+    $fontBase64 = file_exists($fontFile) ? base64_encode(file_get_contents($fontFile)) : null;
+@endphp
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,8 +12,40 @@
             margin: 28px 32px 35px 32px;
             size: a4 portrait;
         }
+
+        @if($fontBase64)
+        @font-face {
+            font-family: 'Kalpurush';
+            font-style: normal;
+            font-weight: normal;
+            src: url('data:font/truetype;charset=utf-8;base64,{{ $fontBase64 }}') format('truetype');
+        }
+        @font-face {
+            font-family: 'Kalpurush';
+            font-style: normal;
+            font-weight: bold;
+            src: url('data:font/truetype;charset=utf-8;base64,{{ $fontBase64 }}') format('truetype');
+        }
+        @font-face {
+            font-family: 'Kalpurush';
+            font-style: italic;
+            font-weight: normal;
+            src: url('data:font/truetype;charset=utf-8;base64,{{ $fontBase64 }}') format('truetype');
+        }
+        @font-face {
+            font-family: 'Kalpurush';
+            font-style: italic;
+            font-weight: bold;
+            src: url('data:font/truetype;charset=utf-8;base64,{{ $fontBase64 }}') format('truetype');
+        }
+        @endif
+
+        * {
+            font-family: 'Kalpurush', 'DejaVu Sans', sans-serif !important;
+        }
+
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Kalpurush', 'DejaVu Sans', sans-serif;
             color: #1e293b;
             font-size: 11px;
             line-height: 1.4;
@@ -264,7 +300,7 @@
                 $fmt = App\Models\ContentPost::FORMATS[$post->post_type] ?? ['label' => ucfirst($post->post_type)];
             @endphp
             <tr>
-                <td style="font-family: monospace;">{{ $post->date ? $post->date->format('d M Y') : 'TBD' }}</td>
+                <td style="color: #334155; font-weight: bold;">{{ $post->date ? $post->date->format('d M Y') : 'TBD' }}</td>
                 <td>
                     <strong>{{ $post->title }}</strong>
                     @if($post->client_feedback)
@@ -306,7 +342,7 @@
             <tr>
                 <td><strong>{{ ucfirst($camp->platform) }}</strong></td>
                 <td>{{ $camp->name }}</td>
-                <td class="text-right" style="font-family: monospace;">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($camp->spend, 0) }}</td>
+                <td class="text-right" style="font-weight: bold;">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($camp->spend, 0) }}</td>
                 <td class="text-right">{{ number_format($camp->clicks) }}</td>
                 <td class="text-right" style="font-weight: bold; color: #047857;">{{ $camp->leads_count }}</td>
                 <td class="text-right">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ $camp->cpl }}</td>
@@ -336,7 +372,7 @@
                         @forelse($client->clientServices as $cs)
                         <tr>
                             <td>{{ $cs->custom_name ?: ($cs->service->name ?? 'Retainer Package') }}</td>
-                            <td class="text-right">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($cs->price * $cs->qty, 0) }}</td>
+                            <td class="text-right" style="font-weight: bold;">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($cs->price * $cs->qty, 0) }}</td>
                         </tr>
                         @empty
                         <tr>
@@ -358,8 +394,8 @@
                     <tbody>
                         @forelse($invoices as $inv)
                         <tr>
-                            <td style="font-family: monospace;">{{ $inv->invoice_number }}</td>
-                            <td class="text-right">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($inv->total, 0) }}</td>
+                            <td style="font-weight: bold; color: #0f172a;">{{ $inv->invoice_number }}</td>
+                            <td class="text-right" style="font-weight: bold;">{{ $agencySettings['agency_currency'] ?? '৳' }}{{ number_format($inv->total, 0) }}</td>
                             <td class="text-center">
                                 <span class="badge {{ $inv->status === 'paid' ? 'badge-success' : 'badge-gray' }}">
                                     {{ ucfirst($inv->status) }}

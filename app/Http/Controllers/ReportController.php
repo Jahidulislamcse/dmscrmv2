@@ -220,7 +220,12 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('reports.client_pdf', array_merge($reportData, [
             'agencySettings' => $agencySettings,
-        ]))->setPaper('a4', 'portrait');
+        ]))
+        ->setPaper('a4', 'portrait')
+        ->setOption('isHtml5ParserEnabled', true)
+        ->setOption('isRemoteEnabled', true)
+        ->setOption('defaultFont', 'Kalpurush')
+        ->setOption('enable_font_subsetting', true);
 
         $filename = 'Client_Report_' . Str::slug($client->name) . '_' . $selectedMonth . '.pdf';
 

@@ -608,10 +608,10 @@
                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-300">Live Release Implemented</span>
                         <span class="text-xs font-mono font-bold text-slate-500">Commit Live · main branch</span>
                     </div>
-                    <h4 class="text-sm font-extrabold text-slate-900">REQ-CAL-01 (Content Calendar Grid) & REQ-CAL-02 (6-Stage Content Lifecycle & Media Tracking)</h4>
+                    <h4 class="text-sm font-extrabold text-slate-900">REQ-AUTH-01 (All-Tier Shortcut Login Credentials) & REQ-CAL-01/02 (Content Ops Workflow)</h4>
                     <p class="text-xs text-slate-600 leading-relaxed max-w-3xl">
-                        1) <strong>Monthly Editorial Calendar:</strong> Visual day-grid calendar (<a href="calendar" class="text-purple-700 underline font-semibold">/calendar</a>) with client, platform, format, and stage filters, plus date scheduling modal;<br>
-                        2) <strong>Deliverable Format Tracking:</strong> Graphic Design, Reels/Shorts, Full Video, Copywriting, and Carousels with dedicated badges and staff assignees;<br>
+                        1) <strong>All-Tier Shortcut Credentials on <code>/login</code>:</strong> Interactive shortcut credentials grid for all 10 roles (Owner, Manager, Sales, SMM, Designer, Motion, Video, SEO, Media Buyer, Team Member) with 1-click auto-login;<br>
+                        2) <strong>Monthly Editorial Calendar:</strong> Visual day-grid calendar (<a href="calendar" class="text-purple-700 underline font-semibold">/calendar</a>) with client, platform, format, and stage filters, plus date scheduling modal;<br>
                         3) <strong>Strict 6-Stage Agency Pipeline:</strong> Visual Kanban view: <em>Draft &rarr; Internal Review &rarr; Client Approval &rarr; Revision Needed &rarr; Approved &rarr; Published</em> with instant stage update modal, feedback notes, and asset links (Canva/Figma/Drive).
                     </p>
                 </div>
@@ -662,24 +662,24 @@
                     <tbody class="divide-y divide-slate-100" id="tableBody">
 
                         <!-- MODULE 1: AUTH & RBAC -->
-                        <tr class="row-item hover:bg-slate-50/80 transition-all" data-status="completed">
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-emerald-50/20" data-status="completed">
                             <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-AUTH-01</td>
                             <td class="py-3.5 px-4">
                                 <span class="font-bold text-slate-800 block">Auth & Access</span>
-                                <span class="text-[10px] text-slate-400">Core Security</span>
+                                <span class="text-[10px] text-emerald-600">All-Tier Shortcuts</span>
                             </td>
                             <td class="py-3.5 px-5">
-                                <div class="font-semibold text-slate-900">Session Authentication & Role Gate</div>
-                                <p class="text-slate-500 text-[11px] mt-0.5">Secure credential verification, bcrypt password hashing, session lifecycle, remember-me tokens, and role identification across 8 agency designations.</p>
+                                <div class="font-semibold text-slate-900">Session Authentication & 10-Tier Shortcut Login Grid</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">Secure credential verification, bcrypt password hashing, session lifecycle, and <strong>All 10-Tier One-Click Shortcut Login Credentials Grid on <code>/login</code></strong> (Owner, Manager, Sales, SMM, Graphic Designer, Motion, Video, SEO, Media Buyer, Employee) with toggleable 1-click auto-login.</p>
                             </td>
                             <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
-                                <div><span class="text-slate-400">Ctrl:</span> AuthController</div>
+                                <div><span class="text-slate-400">Ctrl:</span> AuthController@login</div>
                                 <div><span class="text-slate-400">View:</span> auth/login.blade.php</div>
-                                <div><span class="text-slate-400">Model:</span> User</div>
+                                <div><span class="text-emerald-600">Feature:</span> 10 Tiers Shortcut Bar</div>
                             </td>
                             <td class="py-3.5 px-3 text-center">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                    <i class="fa fa-check text-emerald-600"></i> Done
+                                    <i class="fa fa-circle-check text-emerald-600"></i> Done
                                 </span>
                             </td>
                         </tr>

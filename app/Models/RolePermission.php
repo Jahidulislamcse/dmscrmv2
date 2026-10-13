@@ -70,10 +70,12 @@ class RolePermission
             if (File::exists($path)) {
                 $json = json_decode(File::get($path), true);
                 if (is_array($json)) {
-                    // Merge defaults for any missing roles
+                    // Merge defaults for any missing roles or essential administrative roles
                     foreach ($defaults as $role => $mods) {
                         if (!isset($json[$role])) {
                             $json[$role] = $mods;
+                        } elseif (in_array($role, ['owner', 'admin'])) {
+                            $json[$role] = array_values(array_unique(array_merge($json[$role], $mods)));
                         }
                     }
                     return $json;

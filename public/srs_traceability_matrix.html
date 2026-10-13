@@ -305,6 +305,242 @@
             </div>
         </section>
 
+        <!-- CRM PRIORITY FEATURES GAP ANALYSIS & DIRECT COMPARISON -->
+        <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center font-bold text-white shadow-md shadow-amber-500/20">
+                        <i class="fa fa-crosshairs"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900 tracking-tight">CRM Priority Features Comparison & Gap Analysis</h3>
+                        <p class="text-xs text-slate-500">Direct alignment against the 10 User Priority Specifications & Critical Business Rules</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">4 Covered</span>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">4 Partial</span>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-300">2 Pending</span>
+                </div>
+            </div>
+
+            <!-- 10 Priority Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <!-- 1: Client List -->
+                <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px]">1</span>
+                            Client List (360 Hub)
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                            <i class="fa fa-check text-emerald-600"></i> 100% Covered
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Client profile, services, assigned team, contract, payment, notes, documents & history.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-emerald-200/60 space-y-1">
+                        <div><strong>Live Trace:</strong> <code>resources/views/clients/show.blade.php</code></div>
+                        <p class="text-slate-500">Fully built with 8 dedicated tabs: Profile, Services, Assigned Team, Contract & Billing, Payments & Invoices, Notes, Documents & Assets, and History/Activity Log.</p>
+                    </div>
+                </div>
+
+                <!-- 2: Project & Task Management -->
+                <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px]">2</span>
+                            Project & Task Management
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                            <i class="fa fa-check text-emerald-600"></i> 100% Covered
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Assign tasks, deadlines, priority, checklist, status, attachments and employee tracking.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-emerald-200/60 space-y-1">
+                        <div><strong>Live Trace:</strong> <code>TaskController.php</code>, <code>tasks/index.blade.php</code>, <code>my-tasks.blade.php</code></div>
+                        <p class="text-slate-500">Full Kanban deliverables board, subtask checklists with percentage done, multi-file attachments manager, employee assignment & deadline alerts.</p>
+                    </div>
+                </div>
+
+                <!-- 3: REQUISITION Multi-Stage Flow -->
+                <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px]">3</span>
+                            Requisition & Approval Pipeline
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                            <i class="fa fa-triangle-exclamation text-amber-600"></i> 65% (Gaps to Add)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> New lead meeting -> Admin notification; Quotation before sending -> Admin approval request; Closed sale -> Admin request -> Superadmin assigns project team members.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-amber-200/60 space-y-1">
+                        <div><strong>Status:</strong> Requisitions hub & client activation are live.</div>
+                        <p class="text-amber-800 font-semibold">Gaps to Refine:</p>
+                        <ul class="list-disc pl-4 text-slate-600 space-y-0.5">
+                            <li>Add instant Admin notification trigger when sales schedules a meeting for any new lead.</li>
+                            <li>Formal Quotation approval gate before proposal dispatch.</li>
+                            <li>Team allocation dialog for Superadmin upon final deal activation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 4: Content Management -->
+                <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px]">4</span>
+                            Content Management Workflow
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                            <i class="fa fa-clock text-amber-600"></i> 35% (In Progress)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Content calendar; Design/Reel/Video/Copy tracking; Exact workflow: <em>Draft → Internal Review → Client Approval → Revision → Approved → Published</em>.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-amber-200/60 space-y-1">
+                        <div><strong>Status:</strong> <code>content_posts</code> database table & <code>ContentPost</code> Eloquent model are ready.</div>
+                        <p class="text-amber-800 font-semibold">Next Step:</p>
+                        <p class="text-slate-600">Build dedicated Content Calendar view with the exact 6-stage lifecycle tabs & Design/Reel/Video/Copy filter chips.</p>
+                    </div>
+                </div>
+
+                <!-- 5: Campaign Management -->
+                <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-slate-600 text-white flex items-center justify-center text-[10px]">5</span>
+                            Campaign Management
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700 border border-slate-300">
+                            0% (New Sprint)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Meta & Google campaigns, budget, spend, leads, CPL, CTR, ROAS, etc.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200 space-y-1">
+                        <div><strong>Next Step:</strong> Create <code>campaigns</code> migration, <code>CampaignController</code>, and client-linked Ads performance metrics dashboard.</div>
+                    </div>
+                </div>
+
+                <!-- 6: Employee Info & KPI -->
+                <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px]">6</span>
+                            Employee Info & Performance KPI
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                            <i class="fa fa-triangle-exclamation text-amber-600"></i> 40% (Partial)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Employee data, total absent/attendance, salary & bonuses; SMM assigned tasks completed, overdue tasks, workload, productivity & role-based KPIs.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-amber-200/60 space-y-1">
+                        <div><strong>Status:</strong> Team directory & RBAC matrix live.</div>
+                        <p class="text-amber-800 font-semibold">Gaps to Add:</p>
+                        <p class="text-slate-600">Attendance/absence logs, salary & bonus record management, and visual KPI cards (tasks completed vs overdue, productivity rate).</p>
+                    </div>
+                </div>
+
+                <!-- 7: Sales & Proposal (WITH CRITICAL RESTRICTION) -->
+                <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[10px]">7</span>
+                            Sales & Proposal (Strict Rules)
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                            <i class="fa fa-triangle-exclamation text-amber-600"></i> 55% (Security Rules Needed)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Lead pipeline → Meeting → Proposal → Negotiation → Won/Lost. Quotation/proposal PDF.
+                    </p>
+                    <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-[11px] text-rose-900 space-y-1">
+                        <span class="font-bold flex items-center gap-1 text-rose-700">
+                            <i class="fa fa-shield-halved"></i> CRITICAL USER RULE:
+                        </span>
+                        <p class="leading-relaxed"><em>"Sales member can't change lead stage, download any list in PDF and in Excel. They can only view."</em></p>
+                    </div>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-amber-200/60 space-y-1">
+                        <p class="text-amber-800 font-semibold">Enforcement Action:</p>
+                        <p class="text-slate-600">Enforce middleware policy: only Admin/Owner can modify lead stages. Lock export/download buttons completely for the <code>sales</code> role.</p>
+                    </div>
+                </div>
+
+                <!-- 8: Recurring Billing -->
+                <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px]">8</span>
+                            Recurring Billing & Reminders
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                            <i class="fa fa-check text-emerald-600"></i> 75% Covered
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Monthly retainers, automatic invoices, due/overdue reminders and payment tracking.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-emerald-200/60 space-y-1">
+                        <div><strong>Live Trace:</strong> <code>InvoiceController.php</code>, <code>ReminderController.php</code></div>
+                        <p class="text-slate-500">Invoices with advance deductions & balance tracking live. Reminders Hub with custom titles & placeholder parser live. Next: auto-cron monthly invoice generator.</p>
+                    </div>
+                </div>
+
+                <!-- 9: Monthly Client Reports -->
+                <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-slate-600 text-white flex items-center justify-center text-[10px]">9</span>
+                            Monthly Client Reports
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700 border border-slate-300">
+                            15% (Planned)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Generate reports for social media, ads, content, leads and overall performance.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-slate-200 space-y-1">
+                        <div><strong>Next Step:</strong> Unified report generator aggregating delivered content posts, leads captured, ad ROAS, and tasks completed.</div>
+                    </div>
+                </div>
+
+                <!-- 10: Notifications -->
+                <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px]">10</span>
+                            Notifications Hub & Alerts
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                            <i class="fa fa-check text-emerald-600"></i> 70% Covered
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        <strong>User SRS:</strong> Overdue tasks, pending approvals, overdue invoices, campaign alerts, contract renewal alerts.
+                    </p>
+                    <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-emerald-200/60 space-y-1">
+                        <div><strong>Live Trace:</strong> Header notification bell with badge & dropdown drawer, financial privacy filtering.</div>
+                        <p class="text-slate-500">Next: Automated cron triggers for 30-day contract renewal notice and overdue invoices daily summary.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
         <!-- Interactive Filter Controls -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
             <div class="flex items-center gap-2">

@@ -25,6 +25,9 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <a href="{{ route('calendar.index', ['client_id' => $client->id]) }}" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
+                <i class="fa fa-calendar-days"></i> Content Calendar
+            </a>
             <a href="{{ route('clients.edit', $client->id) }}" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5">
                 <i class="fa fa-edit"></i> Edit Profile
             </a>

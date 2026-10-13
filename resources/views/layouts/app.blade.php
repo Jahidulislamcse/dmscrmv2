@@ -164,7 +164,7 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
-                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks'))
+                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
                     @if(auth()->user()->canAccess('my_tasks'))
@@ -188,6 +188,19 @@
                         @if($openTaskCount > 0)
                         <span class="ml-auto bg-amber-500/20 text-brand-500 text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-500/30">
                             {{ $openTaskCount }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('calendar'))
+                    <a href="{{ route('calendar.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('calendar.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-calendar-days w-4 text-center"></i>
+                        <span>Content Calendar</span>
+                        @php $pendingContent = \App\Models\ContentPost::whereIn('status', ['draft', 'internal_review', 'client_approval', 'revision'])->count(); @endphp
+                        @if($pendingContent > 0)
+                        <span class="ml-auto bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30">
+                            {{ $pendingContent }}
                         </span>
                         @endif
                     </a>

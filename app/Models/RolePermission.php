@@ -16,6 +16,7 @@ class RolePermission
             'requisitions' => 'Requisitions Hub',
             'clients'      => 'Clients Management',
             'tasks'        => 'Task & Deliverables Board',
+            'calendar'     => 'Content Ops & Calendar',
             'team'         => 'Team & Feature Controls',
             'services'     => 'Services Catalog',
             'invoices'     => 'Invoices & Billing',
@@ -45,16 +46,16 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
-            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'team', 'services', 'invoices', 'reminders', 'expenses'],
-            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'reminders'],
-            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'reminders'],
-            'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
-            'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
-            'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
-            'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
-            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
-            'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'team', 'services', 'invoices', 'reminders', 'expenses', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'team', 'services', 'invoices', 'reminders', 'expenses'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'reminders'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'reminders'],
+            'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
+            'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar'],
         ];
     }
 

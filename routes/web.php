@@ -16,7 +16,8 @@ use App\Http\Controllers\{
     TaskController,
     NotificationController,
     ReminderController,
-    FollowupController
+    FollowupController,
+    ContentPostController
 };
 
 // ── Guest / Auth Routes ──
@@ -86,6 +87,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/tasks/{task}/checklist', [TaskController::class, 'updateChecklist'])->name('tasks.update-checklist');
         Route::post('/tasks/{task}/attachments', [TaskController::class, 'uploadAttachment'])->name('tasks.upload-attachment');
         Route::delete('/tasks/{task}/attachments/{index}', [TaskController::class, 'deleteAttachment'])->name('tasks.delete-attachment');
+    });
+
+    // Content Operations & Editorial Calendar
+    Route::middleware('feature:calendar')->group(function () {
+        Route::get('/calendar', [ContentPostController::class, 'index'])->name('calendar.index');
+        Route::post('/calendar', [ContentPostController::class, 'store'])->name('calendar.store');
+        Route::put('/calendar/{post}', [ContentPostController::class, 'update'])->name('calendar.update');
+        Route::post('/calendar/{post}/stage', [ContentPostController::class, 'updateStage'])->name('calendar.update-stage');
+        Route::delete('/calendar/{post}', [ContentPostController::class, 'destroy'])->name('calendar.destroy');
     });
 
     // Requisition Approval Hub

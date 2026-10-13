@@ -93,6 +93,14 @@ class RequisitionController extends Controller
                 $teamMembers = $requisition->team;
                 if ($teamMembers->count() > 0) {
                     foreach ($teamMembers as $member) {
+                        Notification::create([
+                            'user_id' => $member->id,
+                            'icon' => 'users',
+                            'bg_color' => '#e0e7ff',
+                            'message' => "Project Assignment: Superadmin assigned you to the project team for client: {$client->name}.",
+                            'is_admin_only' => false,
+                        ]);
+
                         foreach ($requisition->items as $item) {
                             Task::create([
                                 'title' => "Onboarding Task: {$item->service_name} — {$client->name}",

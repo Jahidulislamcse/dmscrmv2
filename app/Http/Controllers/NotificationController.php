@@ -17,7 +17,7 @@ class NotificationController extends Controller
 
         $notifs = Notification::where(function($q) use($user) {
             $q->where('user_id', $user->id)->orWhereNull('user_id');
-        })->when(!$user->isOwner(), fn($q) => $q->where('is_admin_only', false))
+        })->when(!$user->isAdmin(), fn($q) => $q->where('is_admin_only', false))
           ->orderByDesc('created_at')->take(20)->get();
 
         return response()->json($notifs);

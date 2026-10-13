@@ -28,9 +28,17 @@
             @endif
         </form>
 
-        <a href="{{ route('clients.create') }}" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
-            <i class="fa fa-user-plus"></i> Add New Client
-        </a>
+        <div class="flex items-center gap-2">
+            @if(!auth()->user()->isSales())
+            <a href="{{ route('clients.export') }}" class="px-3.5 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5" title="Export client directory to CSV">
+                <i class="fa fa-file-excel text-emerald-600"></i> Export CSV
+            </a>
+            @endif
+
+            <a href="{{ route('clients.create') }}" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
+                <i class="fa fa-user-plus"></i> Add New Client
+            </a>
+        </div>
     </div>
 
     <!-- Client Table Card -->

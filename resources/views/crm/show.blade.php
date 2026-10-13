@@ -32,10 +32,21 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+            <!-- Proposal & Quotation PDF Link -->
+            <a href="{{ route('crm.quotation', $lead->id) }}" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-2 transition-all">
+                <i class="fa fa-file-invoice text-sm"></i>
+                <span>Proposal & Quotation</span>
+                @if($lead->quotation_status === 'approved')
+                    <span class="w-2 h-2 rounded-full bg-emerald-300" title="Admin Approved"></span>
+                @elseif($lead->quotation_status === 'pending_approval')
+                    <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse" title="Pending Approval"></span>
+                @endif
+            </a>
+
             @if(!$lead->converted_client_id)
             <button @click="showConvertModal = true" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 flex items-center gap-2 transition-all">
                 <i class="fa fa-clipboard-check"></i>
-                <span>Convert to Sales Requisition</span>
+                <span>Convert to Requisition</span>
             </button>
             @endif
 
@@ -43,6 +54,7 @@
                 <i class="fa fa-edit text-amber-500"></i> Edit Lead
             </a>
 
+            @if(auth()->user()->isAdmin())
             <form action="{{ route('crm.destroy', $lead->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this lead?');">
                 @csrf
                 @method('DELETE')
@@ -50,6 +62,7 @@
                     <i class="fa fa-trash-alt"></i>
                 </button>
             </form>
+            @endif
         </div>
     </div>
 
@@ -165,9 +178,10 @@
             <!-- Stage Advancement Card -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
                 <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                    <i class="fa fa-sliders text-blue-500"></i> Update Pipeline Stage
+                    <i class="fa fa-sliders text-blue-500"></i> Pipeline Stage
                 </h3>
 
+                @if(auth()->user()->isAdmin())
                 <form action="{{ route('crm.update-stage', $lead->id) }}" method="POST" class="space-y-3">
                     @csrf
                     <div>
@@ -184,6 +198,19 @@
                         <i class="fa fa-sync-alt"></i> Update Pipeline Stage
                     </button>
                 </form>
+                @else
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-600">Current Stage:</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" style="background-color: {{ $lead->stage->color ?? '#f59e0b' }}">
+                            {{ $lead->stage->name ?? 'Stage' }}
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5 pt-2 border-t border-slate-200/70">
+                        <i class="fa fa-lock text-slate-400 text-xs"></i> <span>Sales representatives have <strong>view-only</strong> access to lead stages. Stage progression is managed by agency leadership.</span>
+                    </p>
+                </div>
+                @endif
             </div>
 
             <!-- Activity & Timeline Card -->

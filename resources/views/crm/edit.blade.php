@@ -74,6 +74,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                @if(auth()->user()->isAdmin())
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Pipeline Stage <span class="text-rose-500">*</span></label>
                     <select name="stage_id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500">
@@ -84,6 +85,16 @@
                         @endforeach
                     </select>
                 </div>
+                @else
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pipeline Stage</label>
+                    <input type="hidden" name="stage_id" value="{{ $lead->stage_id }}">
+                    <div class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 flex items-center justify-between cursor-not-allowed" title="Sales representatives have view-only access to stages">
+                        <span>{{ $lead->stage->name ?? 'Stage' }}</span>
+                        <i class="fa fa-lock text-slate-400"></i>
+                    </div>
+                </div>
+                @endif
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Assigned Sales Representative <span class="text-rose-500">*</span></label>

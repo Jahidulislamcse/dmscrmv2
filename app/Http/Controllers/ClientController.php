@@ -161,4 +161,51 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->route('clients.index')->with('success', "Client '{$client->name}' deleted successfully!");
     }
+
+    public function exportClients(Request $request)
+    {
+        $user = auth()->user();
+
+        // Priority 7 Rule: Sales member cannot download any list in PDF and in Excel (view-only)
+        if ($user && $user->isSales()) {
+            abort(403, 'Access denied: Sales representatives have view-only access and are not permitted to download or export lists.');
+        }
+
+        $clients = Client::with(['assignedSmm', 'assignedSales', 'clientServices'])->latest()->get();
+
+        $filename = "clients_export_" . date('Y-m-d_His') . ".csv";
+        $headers = [
+            "Content-Type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=\"{$filename}\"",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function() use ($clients) {
+            $handle = fopen('php://output', 'w');
+            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+            fputcsv($handle, ['ID', 'Client Name', 'Company', 'Phone', 'Email', 'Location', 'Status', 'Billing Cycle', 'Monthly Value (BDT)', 'Assigned SMM', 'Assigned Sales', 'Onboarded Date']);
+
+            foreach ($clients as $c) {
+                fputcsv($handle, [
+                    $c->id,
+                    $c->name,
+                    $c->company ?? '',
+                    $c->phone ?? '',
+                    $c->email ?? '',
+                    $c->location ?? '',
+                    ucfirst($c->status),
+                    ucfirst($c->billing_cycle),
+                    $c->total_monthly_value ?? 0,
+                    $c->assignedSmm->name ?? 'Unassigned',
+                    $c->assignedSales->name ?? 'Unassigned',
+                    $c->onboarded_at ? $c->onboarded_at->format('Y-m-d') : ''
+                ]);
+            }
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

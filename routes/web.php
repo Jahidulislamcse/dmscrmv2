@@ -44,14 +44,21 @@ Route::middleware(['auth'])->group(function () {
 
     // CRM Pipeline Management
     Route::middleware('feature:crm')->group(function () {
+        Route::get('/crm/export/csv', [LeadController::class, 'exportLeads'])->name('crm.export');
         Route::resource('crm', LeadController::class)->parameters(['crm' => 'lead']);
         Route::post('/crm/{lead}/stage', [LeadController::class, 'updateStage'])->name('crm.update-stage');
         Route::post('/crm/{lead}/timeline', [LeadController::class, 'addTimelineNote'])->name('crm.add-timeline');
         Route::post('/crm/{lead}/convert', [LeadController::class, 'convertToRequisition'])->name('crm.convert');
+        Route::get('/crm/{lead}/quotation', [LeadController::class, 'quotation'])->name('crm.quotation');
+        Route::post('/crm/{lead}/quotation', [LeadController::class, 'updateQuotation'])->name('crm.quotation.update');
+        Route::post('/crm/{lead}/quotation/request-approval', [LeadController::class, 'requestQuotationApproval'])->name('crm.quotation.request-approval');
+        Route::post('/crm/{lead}/quotation/approve', [LeadController::class, 'approveQuotation'])->name('crm.quotation.approve');
+        Route::post('/crm/{lead}/quotation/reject', [LeadController::class, 'rejectQuotation'])->name('crm.quotation.reject');
     });
 
     // Client Operations
     Route::middleware('feature:clients')->group(function () {
+        Route::get('/clients/export/csv', [ClientController::class, 'exportClients'])->name('clients.export');
         Route::resource('clients', ClientController::class);
     });
 

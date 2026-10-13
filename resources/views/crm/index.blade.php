@@ -30,6 +30,19 @@
                 </button>
             </div>
 
+            <!-- Export Leads (Restricted: Sales role cannot export lists) -->
+            @if(!auth()->user()->isSales())
+            <a href="{{ route('crm.export') }}" class="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all" title="Export Leads List to CSV / Excel">
+                <i class="fa fa-file-excel text-emerald-600"></i>
+                <span>Export CSV</span>
+            </a>
+            @else
+            <span class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-semibold text-xs flex items-center gap-1.5" title="Sales representatives have view-only list access and cannot export">
+                <i class="fa fa-lock text-slate-400"></i>
+                <span>View-Only Mode</span>
+            </span>
+            @endif
+
             <a href="{{ route('crm.create') }}" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-2 transition-all">
                 <i class="fa fa-plus-circle text-sm"></i>
                 <span>Add New Lead</span>
@@ -206,7 +219,8 @@
 
                         <!-- Card Footer -->
                         <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <!-- Quick Stage Change Select -->
+                            <!-- Quick Stage Change Select (Restricted: Sales role cannot change lead stages) -->
+                            @if(auth()->user()->isAdmin())
                             <form action="{{ route('crm.update-stage', $lead->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 <select name="stage_id" onchange="this.form.submit()"
@@ -218,6 +232,11 @@
                                     @endforeach
                                 </select>
                             </form>
+                            @else
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" title="Lead stages are managed by admin (View-only for sales)">
+                                <i class="fa fa-lock text-[9px] text-slate-400"></i> {{ $lead->stage->name ?? 'Stage' }}
+                            </span>
+                            @endif
 
                             <!-- Sales Rep Avatar -->
                             <div class="flex items-center gap-1.5" title="Assigned to {{ $lead->assignedTo->name ?? 'Sales' }}">
@@ -295,6 +314,9 @@
                         </td>
                         <td class="py-3.5 px-4 text-right">
                             <div class="flex items-center justify-end gap-2">
+                                <a href="{{ route('crm.quotation', $lead->id) }}" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-amber-600" title="Proposal & Quotation">
+                                    <i class="fa fa-file-invoice"></i>
+                                </a>
                                 <a href="{{ route('crm.show', $lead->id) }}" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900" title="View Profile">
                                     <i class="fa fa-eye"></i>
                                 </a>

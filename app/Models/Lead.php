@@ -23,11 +23,22 @@ class Lead extends Model
         'notes',
         'next_followup',
         'converted_client_id',
+        'quotation_status',
+        'quotation_notes',
+        'quotation_valid_until',
+        'quotation_discount',
+        'quotation_tax_percent',
+        'quotation_approved_by',
+        'quotation_approved_at',
     ];
 
     protected $casts = [
         'budget' => 'decimal:2',
         'next_followup' => 'date',
+        'quotation_valid_until' => 'date',
+        'quotation_approved_at' => 'datetime',
+        'quotation_discount' => 'decimal:2',
+        'quotation_tax_percent' => 'decimal:2',
     ];
 
     public function stage()
@@ -53,6 +64,11 @@ class Lead extends Model
     public function requirements()
     {
         return $this->hasMany(LeadRequirement::class);
+    }
+
+    public function quotationApprovedBy()
+    {
+        return $this->belongsTo(User::class, 'quotation_approved_by');
     }
 
     public function timelines()

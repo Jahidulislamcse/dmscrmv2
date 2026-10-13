@@ -82,10 +82,10 @@ class MeetingController extends Controller
 
         // Auto-resolve client name if client_id or lead_id selected
         $clientName = $validated['client_name'] ?? null;
-        if ($validated['client_id']) {
+        if (!empty($validated['client_id'])) {
             $client = Client::find($validated['client_id']);
             $clientName = $client->name ?? $clientName;
-        } elseif ($validated['lead_id']) {
+        } elseif (!empty($validated['lead_id'])) {
             $lead = Lead::find($validated['lead_id']);
             $clientName = $lead->name ?? $clientName;
         }
@@ -121,6 +121,34 @@ class MeetingController extends Controller
                     ]);
                 }
             }
+        }
+
+        // Priority 3: When sales or any team member sets a new lead meeting, notify Admin
+        if ($meeting->lead_id) {
+            $lead = Lead::find($meeting->lead_id);
+            $leadName = $lead ? $lead->name : 'Prospect Lead';
+            $creator = Auth::user();
+
+            $admins = User::whereIn('role', ['owner', 'admin'])
+                ->where('id', '!=', $creator ? $creator->id : 0)
+                ->get();
+
+            foreach ($admins as $admin) {
+                Notification::create([
+                    'user_id' => $admin->id,
+                    'icon' => 'calendar',
+                    'bg_color' => '#fef3c7',
+                    'message' => "New Lead Meeting Scheduled: " . ($creator ? $creator->name : 'Sales') . " scheduled '{$meeting->agenda}' with lead '{$leadName}' on {$meeting->date->format('d M, Y')}",
+                    'is_admin_only' => true,
+                ]);
+            }
+
+            \App\Models\LeadTimeline::create([
+                'lead_id' => $meeting->lead_id,
+                'user_id' => Auth::id(),
+                'type' => 'meeting',
+                'text' => "Scheduled meeting: '{$meeting->agenda}' on {$meeting->date->format('d M, Y')} at {$meeting->time}",
+            ]);
         }
 
         if ($request->wantsJson()) {

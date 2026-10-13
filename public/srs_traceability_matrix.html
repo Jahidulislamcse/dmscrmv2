@@ -96,7 +96,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div class="space-y-3 max-w-2xl">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                        <i class="fa fa-circle-check text-amber-600"></i> Project Scope Baseline: 55 Requirements across 18 Domains
+                        <i class="fa fa-circle-check text-amber-600"></i> Project Scope Baseline: 61 Specifications across 19 Domains (Including Priority Rules)
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">System Implementation Coverage Status</h2>
                     <p class="text-sm text-slate-600 leading-relaxed">
@@ -110,17 +110,17 @@
                         <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
                             <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none"
                                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="text-amber-500" stroke-dasharray="76.4, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none"
+                            <path class="text-amber-500" stroke-dasharray="68.9, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none"
                                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span class="text-xl font-extrabold font-mono text-amber-400">76.4%</span>
+                            <span class="text-xl font-extrabold font-mono text-amber-400">68.9%</span>
                             <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Done</span>
                         </div>
                     </div>
                     <div class="space-y-1">
                         <span class="text-xs uppercase font-bold text-slate-400">Total Completion</span>
-                        <div class="text-2xl font-black text-white">42 / 55</div>
+                        <div class="text-2xl font-black text-white">42 / 61</div>
                         <p class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                             <i class="fa fa-arrow-trend-up"></i> 14 Core Modules Live
                         </p>
@@ -132,19 +132,19 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-100">
                 <div class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80">
                     <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">Completed & Live</span>
-                    <div class="text-2xl font-extrabold text-emerald-950 mt-1">42 <span class="text-xs text-emerald-700 font-medium">(76.4%)</span></div>
+                    <div class="text-2xl font-extrabold text-emerald-950 mt-1">42 <span class="text-xs text-emerald-700 font-medium">(68.9%)</span></div>
                     <span class="text-[10px] text-emerald-600 font-semibold mt-0.5 block">Full MVC, Tested & Pushed</span>
                 </div>
 
                 <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80">
                     <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">In Progress / Next Up</span>
-                    <div class="text-2xl font-extrabold text-amber-950 mt-1">4 <span class="text-xs text-amber-700 font-medium">(7.3%)</span></div>
-                    <span class="text-[10px] text-amber-600 font-semibold mt-0.5 block">Schema ready, UI pending</span>
+                    <div class="text-2xl font-extrabold text-amber-950 mt-1">8 <span class="text-xs text-amber-700 font-medium">(13.1%)</span></div>
+                    <span class="text-[10px] text-amber-600 font-semibold mt-0.5 block">Priority features queued</span>
                 </div>
 
                 <div class="p-4 rounded-2xl bg-slate-100 border border-slate-200">
                     <span class="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">Backlog / Phase 2</span>
-                    <div class="text-2xl font-extrabold text-slate-900 mt-1">9 <span class="text-xs text-slate-500 font-medium">(16.3%)</span></div>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">11 <span class="text-xs text-slate-500 font-medium">(18.0%)</span></div>
                     <span class="text-[10px] text-slate-500 font-semibold mt-0.5 block">AI Agent, GCal API, Workload</span>
                 </div>
 
@@ -545,12 +545,12 @@
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Filter By Status:</span>
-                <button onclick="filterTable('all')" id="btn-all" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition-all">All (55)</button>
+                <button onclick="filterTable('all')" id="btn-all" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition-all">All (61)</button>
                 <button onclick="filterTable('completed')" id="btn-completed" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-emerald-700 hover:bg-emerald-50 border border-slate-200 transition-all">Completed (42)</button>
-                <button onclick="filterTable('pending')" id="btn-pending" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-amber-700 hover:bg-amber-50 border border-slate-200 transition-all">Pending (13)</button>
+                <button onclick="filterTable('pending')" id="btn-pending" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-amber-700 hover:bg-amber-50 border border-slate-200 transition-all">Pending (19)</button>
             </div>
             <div class="text-xs text-slate-500">
-                Showing <span id="visibleCount" class="font-bold text-slate-900">55</span> specifications
+                Showing <span id="visibleCount" class="font-bold text-slate-900">61</span> specifications
             </div>
         </div>
 
@@ -1191,6 +1191,134 @@
                             <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
                                 <div><span class="text-slate-400">Status:</span> External API Layer</div>
                                 <div><span class="text-slate-400">Key:</span> ANTHROPIC_KEY / GCAL</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700">
+                                    Phase 2
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- MODULE: PRIORITY ADDITIONS & ENHANCEMENTS -->
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-rose-50/20" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-SAL-02</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Sales Security</span>
+                                <span class="text-[10px] text-rose-600">Access Control</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">Sales View-Only Restriction: Lead Stages & List Exports</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5"><strong>Critical Business Rule:</strong> Users with <code>sales</code> role cannot move or edit lead stages, and cannot export or download client/lead lists in PDF or Excel (View-only protection).</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Ctrl:</span> LeadController</div>
+                                <div><span class="text-slate-400">Policy:</span> RoleMiddleware / canAccess</div>
+                                <div><span class="text-rose-600">Action:</span> Hide export & lock stage drag</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 border border-rose-300">
+                                    <i class="fa fa-shield-halved text-rose-600"></i> Next Up
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-amber-50/20" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-REQ-02</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Requisition Flow</span>
+                                <span class="text-[10px] text-amber-600">Multi-Step Hooks</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">Multi-Stage Sales-Admin Approval & Meeting Notifications</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">1) New lead meeting scheduled -> Admin notified; 2) Quotation dispatch approval gate; 3) Deal closing request -> Superadmin assigns project team members.</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Ctrl:</span> MeetingController, RequisitionController</div>
+                                <div><span class="text-amber-600">Action:</span> Add Admin notification hooks</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                                    <i class="fa fa-clock text-amber-600"></i> Next Up
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-amber-50/20" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-CAL-02</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Content Ops</span>
+                                <span class="text-[10px] text-amber-600">6-Stage Lifecycle</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">6-Stage Content Lifecycle & Media Format Tracking</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">Strict workflow: <em>Draft &rarr; Internal Review &rarr; Client Approval &rarr; Revision &rarr; Approved &rarr; Published</em> across Design, Reel, Video, and Copywriting deliverables.</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Model:</span> ContentPost</div>
+                                <div><span class="text-amber-600">Action:</span> Build Calendar with 6 stage tabs</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                                    <i class="fa fa-clock text-amber-600"></i> Next Up
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-slate-50" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-CAM-01</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Campaigns</span>
+                                <span class="text-[10px] text-slate-500">Ad Management</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">Meta & Google Ad Campaigns Performance Tracker</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">Track live ad campaigns per client with Budget, Spend, Leads acquired, CPL (Cost per Lead), CTR (Click-Through Rate), and ROAS metrics.</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Table:</span> campaigns (new migration)</div>
+                                <div><span class="text-slate-400">Ctrl:</span> CampaignController</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700">
+                                    Phase 2
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-slate-50" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-EMP-01</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Employee HR</span>
+                                <span class="text-[10px] text-slate-500">Attendance & KPI</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">Employee Attendance, Salary/Bonus & KPI Productivity</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">Track employee absences, salary/bonus management, SMM tasks completed vs overdue, workload distribution, and role-based performance KPIs.</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Table:</span> employee_kpis, attendances</div>
+                                <div><span class="text-slate-400">View:</span> team/kpi.blade.php</div>
+                            </td>
+                            <td class="py-3.5 px-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700">
+                                    Phase 2
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="row-item hover:bg-slate-50/80 transition-all bg-slate-50" data-status="pending">
+                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">REQ-REP-01</td>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-800 block">Client Reports</span>
+                                <span class="text-[10px] text-slate-500">Monthly Exports</span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <div class="font-semibold text-slate-900">Monthly Client Performance Reporting Generator</div>
+                                <p class="text-slate-500 text-[11px] mt-0.5">Consolidated client report aggregating social media deliverables, ad performance, leads generated, and task milestone completion.</p>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-600">
+                                <div><span class="text-slate-400">Ctrl:</span> ReportController</div>
+                                <div><span class="text-slate-400">PDF:</span> dompdf client report template</div>
                             </td>
                             <td class="py-3.5 px-3 text-center">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700">

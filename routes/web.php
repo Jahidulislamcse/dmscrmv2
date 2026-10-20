@@ -23,7 +23,8 @@ use App\Http\Controllers\{
     ReportController,
     TargetController,
     WorklogController,
-    WorkloadController
+    WorkloadController,
+    AiAssistantController
 };
 
 // ── Guest / Auth Routes ──
@@ -185,6 +186,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/workload/items', [WorkloadController::class, 'storeWorkItem'])->name('workload.items.store');
         Route::patch('/workload/items/{item}/status', [WorkloadController::class, 'updateWorkItemStatus'])->name('workload.items.update-status');
         Route::delete('/workload/items/{item}', [WorkloadController::class, 'destroyWorkItem'])->name('workload.items.destroy');
+    });
+
+    // AI Copy & Creative Brief Assistant & Calendar Sync (REQ-AGT-01)
+    Route::middleware('feature:ai')->group(function () {
+        Route::get('/ai-assistant', [AiAssistantController::class, 'index'])->name('ai.index');
+        Route::post('/ai-assistant/generate', [AiAssistantController::class, 'generate'])->name('ai.generate');
+        Route::get('/calendar/export.ics', [AiAssistantController::class, 'exportIcs'])->name('calendar.export-ics');
     });
 
     // System & Agency Settings

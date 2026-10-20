@@ -28,6 +28,7 @@ class RolePermission
             'targets'      => 'Sales Quotas & Targets',
             'worklogs'     => 'Daily Worklogs & QA',
             'workload'     => 'Team Workload & Day Planner',
+            'ai'           => 'AI Brief & Copy Generator',
             'settings'     => 'System Settings',
         ];
     }
@@ -51,16 +52,16 @@ class RolePermission
     public static function defaultPermissions(): array
     {
         return [
-            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports', 'targets', 'worklogs', 'workload', 'settings'],
-            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports', 'targets', 'worklogs', 'workload'],
-            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports', 'targets', 'worklogs', 'workload'],
-            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports', 'worklogs', 'workload'],
-            'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload'],
-            'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload'],
-            'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload'],
-            'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload'],
-            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'campaigns', 'reports', 'worklogs', 'workload'],
-            'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload'],
+            'owner' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports', 'targets', 'worklogs', 'workload', 'ai', 'settings'],
+            'admin' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'team', 'services', 'invoices', 'reminders', 'expenses', 'reports', 'targets', 'worklogs', 'workload', 'ai'],
+            'sales' => ['dashboard', 'my_tasks', 'crm', 'meetings', 'followups', 'requisitions', 'clients', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports', 'targets', 'worklogs', 'workload', 'ai'],
+            'smm' => ['dashboard', 'my_tasks', 'clients', 'meetings', 'followups', 'tasks', 'calendar', 'campaigns', 'reminders', 'reports', 'worklogs', 'workload', 'ai'],
+            'designer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload', 'ai'],
+            'motion' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload', 'ai'],
+            'video' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload', 'ai'],
+            'seo' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload', 'ai'],
+            'mediabuyer' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'campaigns', 'reports', 'worklogs', 'workload', 'ai'],
+            'employee' => ['dashboard', 'my_tasks', 'meetings', 'tasks', 'calendar', 'worklogs', 'workload', 'ai'],
         ];
     }
 

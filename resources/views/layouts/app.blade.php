@@ -180,7 +180,7 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
-                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns') || auth()->user()->canAccess('worklogs') || auth()->user()->canAccess('workload'))
+                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns') || auth()->user()->canAccess('worklogs') || auth()->user()->canAccess('workload') || auth()->user()->canAccess('ai'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
                     @if(auth()->user()->canAccess('my_tasks'))
@@ -252,6 +252,14 @@
                     <a href="{{ route('workload.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('workload.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
                         <i class="fa fa-users-gear w-4 text-center"></i>
                         <span>Workload & Planner</span>
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('ai'))
+                    <a href="{{ route('ai.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('ai.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-wand-magic-sparkles w-4 text-center text-amber-400"></i>
+                        <span>AI Copy & Briefs</span>
+                        <span class="ml-auto bg-amber-400/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-400/30">AI</span>
                     </a>
                     @endif
                     @endif

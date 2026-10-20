@@ -20,7 +20,9 @@ use App\Http\Controllers\{
     ContentPostController,
     CampaignController,
     EmployeeKpiController,
-    ReportController
+    ReportController,
+    TargetController,
+    WorklogController
 };
 
 // ── Guest / Auth Routes ──
@@ -156,6 +158,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/client/{client}', [ReportController::class, 'clientReport'])->name('reports.client');
         Route::get('/reports/client/{client}/pdf', [ReportController::class, 'clientPdf'])->name('reports.client.pdf');
+    });
+
+    // Sales Targets & Monthly Quotas (REQ-TGT-01)
+    Route::middleware('feature:targets')->group(function () {
+        Route::get('/targets', [TargetController::class, 'index'])->name('targets.index');
+        Route::post('/targets', [TargetController::class, 'store'])->name('targets.store');
+        Route::post('/targets/{target}/deals', [TargetController::class, 'addDeal'])->name('targets.deals.store');
+        Route::put('/targets/{target}', [TargetController::class, 'update'])->name('targets.update');
+        Route::delete('/targets/{target}', [TargetController::class, 'destroy'])->name('targets.destroy');
+    });
+
+    // Daily Worklogs & SMM QA Review (REQ-LOG-01)
+    Route::middleware('feature:worklogs')->group(function () {
+        Route::get('/worklogs', [WorklogController::class, 'index'])->name('worklogs.index');
+        Route::post('/worklogs', [WorklogController::class, 'store'])->name('worklogs.store');
+        Route::post('/worklogs/{worklog}/review', [WorklogController::class, 'review'])->name('worklogs.review');
+        Route::delete('/worklogs/{worklog}', [WorklogController::class, 'destroy'])->name('worklogs.destroy');
     });
 
     // System & Agency Settings

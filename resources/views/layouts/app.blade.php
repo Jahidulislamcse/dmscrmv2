@@ -151,6 +151,13 @@
                         @endif
                     </a>
                     @endif
+
+                    @if(auth()->user()->canAccess('targets'))
+                    <a href="{{ route('targets.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('targets.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-crosshairs w-4 text-center"></i>
+                        <span>Sales Targets</span>
+                    </a>
+                    @endif
                     @endif
 
                     <!-- CLIENT OPERATIONS -->
@@ -173,7 +180,7 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
-                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns'))
+                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns') || auth()->user()->canAccess('worklogs'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
                     @if(auth()->user()->canAccess('my_tasks'))
@@ -223,6 +230,19 @@
                         @if($activeCampaigns > 0)
                         <span class="ml-auto bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
                             {{ $activeCampaigns }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('worklogs'))
+                    <a href="{{ route('worklogs.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('worklogs.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-clipboard-list w-4 text-center"></i>
+                        <span>Daily Worklogs</span>
+                        @php $pendingWorklogs = \App\Models\Worklog::where('status', 'pending')->count(); @endphp
+                        @if($pendingWorklogs > 0 && (auth()->user()->isOwner() || auth()->user()->isAdmin() || auth()->user()->isSMM()))
+                        <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            {{ $pendingWorklogs }}
                         </span>
                         @endif
                     </a>

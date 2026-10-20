@@ -180,7 +180,7 @@
                     @endif
 
                     <!-- WORK & DELIVERABLES -->
-                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns') || auth()->user()->canAccess('worklogs'))
+                    @if(auth()->user()->canAccess('my_tasks') || auth()->user()->canAccess('tasks') || auth()->user()->canAccess('calendar') || auth()->user()->canAccess('campaigns') || auth()->user()->canAccess('worklogs') || auth()->user()->canAccess('workload'))
                     <div class="px-3 pt-4 pb-2 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Work & Deliverables</div>
 
                     @if(auth()->user()->canAccess('my_tasks'))
@@ -245,6 +245,13 @@
                             {{ $pendingWorklogs }}
                         </span>
                         @endif
+                    </a>
+                    @endif
+
+                    @if(auth()->user()->canAccess('workload'))
+                    <a href="{{ route('workload.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('workload.*') ? 'bg-gradient-to-r from-brand-500 to-amber-600 text-white shadow-md shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white' }}">
+                        <i class="fa fa-users-gear w-4 text-center"></i>
+                        <span>Workload & Planner</span>
                     </a>
                     @endif
                     @endif

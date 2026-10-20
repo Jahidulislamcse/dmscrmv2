@@ -22,7 +22,8 @@ use App\Http\Controllers\{
     EmployeeKpiController,
     ReportController,
     TargetController,
-    WorklogController
+    WorklogController,
+    WorkloadController
 };
 
 // ── Guest / Auth Routes ──
@@ -175,6 +176,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/worklogs', [WorklogController::class, 'store'])->name('worklogs.store');
         Route::post('/worklogs/{worklog}/review', [WorklogController::class, 'review'])->name('worklogs.review');
         Route::delete('/worklogs/{worklog}', [WorklogController::class, 'destroy'])->name('worklogs.destroy');
+    });
+
+    // Team Workload Capacity & Day Planner (REQ-WLD-01)
+    Route::middleware('feature:workload')->group(function () {
+        Route::get('/workload', [WorkloadController::class, 'index'])->name('workload.index');
+        Route::post('/workload/items', [WorkloadController::class, 'storeWorkItem'])->name('workload.items.store');
+        Route::patch('/workload/items/{item}/status', [WorkloadController::class, 'updateWorkItemStatus'])->name('workload.items.update-status');
+        Route::delete('/workload/items/{item}', [WorkloadController::class, 'destroyWorkItem'])->name('workload.items.destroy');
     });
 
     // System & Agency Settings

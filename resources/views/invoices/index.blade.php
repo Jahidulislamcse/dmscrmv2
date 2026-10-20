@@ -22,6 +22,15 @@
                 </select>
             </form>
 
+            @if(auth()->user()->isOwner() || auth()->user()->isAdmin())
+            <form action="{{ route('invoices.generate-recurring') }}" method="POST" onsubmit="return confirm('Execute automated recurring billing for active clients? This will generate itemized invoices for clients who do not yet have an invoice issued for this month.');">
+                @csrf
+                <button type="submit" class="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5" title="Generate Monthly Retainer Invoices">
+                    <i class="fa fa-rotate text-indigo-600"></i> Auto-Bill Retainers
+                </button>
+            </form>
+            @endif
+
             <a href="{{ route('invoices.create') }}" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
                 <i class="fa fa-file-invoice"></i> Create New Invoice
             </a>

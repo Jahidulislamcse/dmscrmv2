@@ -54,3 +54,12 @@ Artisan::command('crm:check-alerts', function () {
     $this->info("CRM Automated Alerts check complete! Generated {$count} new notification(s).");
     return self::SUCCESS;
 })->purpose('Check and generate automated notifications for overdue invoices, tasks, and contract renewals')->dailyAt('09:00');
+
+// Automated Monthly Retainer Recurring Billing Generator (REQ-BIL-01)
+Artisan::command('invoices:generate-recurring {month?}', function (?string $month = null) {
+    $targetMonth = $month ?: now()->format('Y-m');
+    $this->info("Running automated recurring retainer billing for month: {$targetMonth}...");
+    $result = \App\Http\Controllers\InvoiceController::generateRecurringInvoices($targetMonth);
+    $this->info("Recurring billing complete! Generated {$result['generated_count']} invoice(s) totaling BDT " . number_format($result['total_amount'], 2) . ".");
+    return self::SUCCESS;
+})->purpose('Generate monthly retainer invoices for active clients')->monthlyOn(1, '01:00');

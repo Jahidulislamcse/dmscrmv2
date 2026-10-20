@@ -141,6 +141,7 @@ Route::middleware(['auth'])->group(function () {
     // Financial Oversight (Invoices, Expenses & Payment Reminders)
     Route::middleware('feature:invoices')->group(function () {
         Route::resource('invoices', InvoiceController::class)->only(['index', 'create', 'store', 'show']);
+        Route::post('/invoices/generate-recurring', [InvoiceController::class, 'runRecurringBilling'])->name('invoices.generate-recurring');
     });
 
     Route::middleware('feature:reminders')->group(function () {

@@ -368,9 +368,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">7 Covered</span>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">8 Covered</span>
                     <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">2 Partial</span>
-                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-300">1 Pending</span>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">0 Pending</span>
                 </div>
             </div>
 
@@ -592,18 +592,22 @@
                     <div class="flex items-center justify-between">
                         <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
                             <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px]">10</span>
-                            Notifications Hub & Alerts
+                            Notifications Hub & Alerts Engine
                         </span>
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
-                            <i class="fa fa-check text-emerald-600"></i> 70% Covered
+                            <i class="fa fa-check text-emerald-600"></i> 100% Covered
                         </span>
                     </div>
                     <p class="text-xs text-slate-600 font-medium">
                         <strong>User SRS:</strong> Overdue tasks, pending approvals, overdue invoices, campaign alerts, contract renewal alerts.
                     </p>
                     <div class="text-[11px] text-slate-700 bg-white p-2.5 rounded-xl border border-emerald-200/60 space-y-1">
-                        <div><strong>Live Trace:</strong> Header notification bell with badge & dropdown drawer, financial privacy filtering.</div>
-                        <p class="text-slate-500">Next: Automated cron triggers for 30-day contract renewal notice and overdue invoices daily summary.</p>
+                        <div><strong>Live Trace:</strong> <code>NotificationController.php</code>, <code>routes/console.php ('crm:check-alerts')</code>, <code>routes/web.php</code></div>
+                        <ul class="list-disc pl-4 text-slate-600 space-y-0.5">
+                            <li><strong>Automated Daily Alerts Cron:</strong> Scans overdue unpaid invoices, overdue creative deliverables, pending SMM worklog evaluations, and retainer contract milestones.</li>
+                            <li><strong>Interactive Sync & Actions:</strong> Live 1-click alert synchronization button in header bell drawer, unread count pill, and bulk mark-all-as-read.</li>
+                            <li><strong>Role-Based Financial Privacy:</strong> Financial invoice overdue alerts restricted strictly to agency owners and administrative managers.</li>
+                        </ul>
                     </div>
                 </div>
 

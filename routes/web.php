@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     // Notifications Center
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::post('/notifications/sync-alerts', [NotificationController::class, 'syncAlerts'])->name('notifications.sync-alerts');
 
     // Meetings & Schedule Management
     Route::middleware('feature:meetings')->group(function () {

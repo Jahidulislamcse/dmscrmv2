@@ -46,3 +46,11 @@ Artisan::command('user:check-password {username} {password}', function (string $
 
     return self::SUCCESS;
 })->purpose('Check a user password against the stored hash');
+
+// Automated CRM Notification & Alerts Dispatcher (REQ-NOT-01)
+Artisan::command('crm:check-alerts', function () {
+    $this->info('Scanning CRM for overdue invoices, tasks, pending SMM worklogs, and contract milestones...');
+    $count = \App\Http\Controllers\NotificationController::generateAutomatedAlerts();
+    $this->info("CRM Automated Alerts check complete! Generated {$count} new notification(s).");
+    return self::SUCCESS;
+})->purpose('Check and generate automated notifications for overdue invoices, tasks, and contract renewals')->dailyAt('09:00');

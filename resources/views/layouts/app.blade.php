@@ -388,22 +388,34 @@
                                     @endif
                                 </div>
 
-                                @if($unreadCount > 0)
-                                <form action="{{ route('notifications.read-all') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="text-[10px] font-bold text-amber-600 hover:text-amber-700 hover:underline">
-                                        Mark all as read
-                                    </button>
-                                </form>
-                                @endif
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('notifications.sync-alerts') }}" method="POST" title="Scan & Sync CRM Alerts">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] font-bold text-slate-500 hover:text-indigo-600 flex items-center gap-1 hover:underline">
+                                            <i class="fa fa-arrows-rotate text-[9px]"></i> Sync
+                                        </button>
+                                    </form>
+                                    @if($unreadCount > 0)
+                                    <form action="{{ route('notifications.read-all') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] font-bold text-amber-600 hover:text-amber-700 hover:underline">
+                                            Mark all read
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
                             </div>
 
                             <!-- List -->
                             <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 px-1">
                                 @forelse($userNotifs as $notif)
                                 <div class="p-3 flex items-start gap-3 hover:bg-slate-50 rounded-xl transition-all {{ !$notif->is_read ? 'bg-amber-50/40' : '' }}">
-                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0" style="background-color: {{ $notif->bg_color ?? '#fffbe6' }}">
-                                        {{ $notif->icon ?? '🔔' }}
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs flex-shrink-0 {{ str_starts_with($notif->bg_color ?? '', 'bg-') ? $notif->bg_color . ' text-white' : 'bg-amber-100 text-amber-700' }}">
+                                        @if(str_contains($notif->icon ?? '', 'fa-') || in_array($notif->icon, ['triangle-exclamation', 'clock', 'file-contract', 'clipboard-check', 'bell', 'check', 'trophy', 'calendar', 'chart-line', 'circle-check', 'thumbs-up', 'pen-to-square']))
+                                            <i class="fa fa-{{ str_replace('fa-', '', $notif->icon) }}"></i>
+                                        @else
+                                            <span>{{ $notif->icon ?? '🔔' }}</span>
+                                        @endif
                                     </div>
                                     <div class="flex-1 space-y-0.5">
                                         <p class="text-xs font-semibold text-slate-800 leading-snug">{{ $notif->message }}</p>

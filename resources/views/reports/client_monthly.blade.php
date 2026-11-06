@@ -555,8 +555,8 @@
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Prepared & Approved By Agency</span>
                 <div class="border-b border-slate-300 w-48 h-8"></div>
                 <div class="space-y-0.5">
-                    <div class="font-extrabold text-slate-900">{{ auth()->user()->name }}</div>
-                    <div class="text-[11px] text-slate-500">{{ auth()->user()->designation ?? 'Lead Account Director' }} · {{ $agencySettings['agency_name'] }}</div>
+                    <div class="font-extrabold text-slate-900">{{ auth()->user()?->name ?? ($client->assignedSales?->name ?? 'Lead Account Director') }}</div>
+                    <div class="text-[11px] text-slate-500">{{ auth()->user()?->designation ?? 'Lead Account Director' }} · {{ $agencySettings['agency_name'] }}</div>
                 </div>
             </div>
 

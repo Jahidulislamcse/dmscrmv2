@@ -426,7 +426,7 @@
         <tr>
             <td style="width: 50%;">
                 <div class="sign-line"></div>
-                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">{{ auth()->user()->name }}</div>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">{{ auth()->user()?->name ?? ($client->assignedSales?->name ?? 'Account Director') }}</div>
                 <div style="font-size: 8px; color: #64748b;">Account Executive · {{ $agencySettings['agency_name'] ?? 'Agency' }}</div>
             </td>
             <td style="width: 50%; text-align: right;">
